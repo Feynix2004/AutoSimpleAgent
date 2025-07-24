@@ -16,6 +16,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <fastjson.version>1.2.83</fastjson.version>
         <hutool.version>5.8.20</hutool.version>
+        <httpclient.version>4.5.14</httpclient.version>
     </properties>
     <dependencies>
         <!-- Spring Boot 依赖 -->
@@ -38,6 +39,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+<!--        &lt;!&ndash; 日志依赖 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-api</artifactId>-->
+<!--            <version>1.7.36</version>-->
+<!--        </dependency>-->
 
 
         <!-- MyBatis Plus 依赖 -->
@@ -64,6 +72,14 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
+        </dependency>
+
+
+        <!-- HTTP客户端 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
