@@ -1,16 +1,15 @@
-package org.feynix.interfaces.api.conversation;
+package org.feynix.interfaces.api.portal.conversation;
 
-
-import org.feynix.application.conversation.dto.ChatRequest;
-import org.feynix.application.conversation.dto.ChatResponse;
-import org.feynix.application.conversation.dto.StreamChatRequest;
-import org.feynix.application.conversation.service.ConversationService;
-import org.feynix.interfaces.api.common.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.feynix.application.conversation.dto.ChatRequest;
+import org.feynix.application.conversation.dto.ChatResponse;
+import org.feynix.application.conversation.dto.StreamChatRequest;
+import org.feynix.application.conversation.service.ConversationAppService;
+import org.feynix.interfaces.api.common.Result;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -18,16 +17,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 对话控制器
+ * 前台用户对话控制器
  */
 @RestController
 @RequestMapping("/conversation")
-public class ConversationController {
-    private final Logger logger = LoggerFactory.getLogger(ConversationController.class);
+public class PortalConversationController {
+
+    private final Logger logger = LoggerFactory.getLogger(PortalConversationController.class);
+
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Resource
-    private ConversationService conversationService;
+    private ConversationAppService conversationAppService;
 
     /**
      * 普通聊天接口
@@ -48,14 +49,13 @@ public class ConversationController {
         }
 
         try {
-            ChatResponse response = conversationService.chat(request);
+            ChatResponse response = conversationAppService.chat(request);
             return Result.success(response);
         } catch (Exception e) {
             logger.error("处理聊天请求异常", e);
             return Result.serverError("处理请求失败: " + e.getMessage());
         }
     }
-
 
     /**
      * 流式聊天接口，使用SSE (Server-Sent Events) - POST方式
@@ -97,7 +97,7 @@ public class ConversationController {
         executorService.execute(() -> {
             try {
                 // 使用新的真正流式实现
-                conversationService.chatStream(request, (response, isLast) -> {
+                conversationAppService.chatStream(request, (response, isLast) -> {
                     try {
                         // 发送每个响应块到客户端
                         emitter.send(response);
@@ -151,18 +151,4 @@ public class ConversationController {
         // 调用POST方法处理
         return chatStream(request);
     }
-
-
-
-
-    /**
-     * 健康检查接口
-     *
-     * @return 状态信息
-     */
-    @GetMapping("/health")
-    public Result<Object> health() {
-        return Result.success("服务正常运行中");
-    }
-
-}
+} 

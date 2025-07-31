@@ -21,9 +21,9 @@ import java.util.function.BiConsumer;
  * 对话服务
  */
 @Service
-public class ConversationService {
+public class ConversationAppService {
 
-    private final Logger logger = LoggerFactory.getLogger(ConversationService.class);
+    private final Logger logger = LoggerFactory.getLogger(ConversationAppService.class);
     @Resource
     private LLMService defaultLLMService;
 
