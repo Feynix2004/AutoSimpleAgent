@@ -1,4 +1,4 @@
-package org.feynix.domain.agent.service.impl;
+package org.feynix.domain.agent.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentVersionRepository;
-import org.feynix.domain.agent.service.AgentService;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.domain.common.util.ValidationUtils;
 import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
@@ -21,12 +20,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class AgentServiceImpl implements AgentService {
+public class AgentDomainService{
 
     private final AgentRepository agentRepository;
     private final AgentVersionRepository agentVersionRepository;
 
-    public AgentServiceImpl(AgentRepository agentRepository, AgentVersionRepository agentVersionRepository) {
+    public AgentDomainService(AgentRepository agentRepository, AgentVersionRepository agentVersionRepository) {
         this.agentRepository = agentRepository;
         this.agentVersionRepository = agentVersionRepository;
     }
@@ -34,7 +33,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 创建新Agent
      */
-    @Override
+    
     @Transactional
     public AgentDTO createAgent(AgentEntity agent) {
         // 参数校验
@@ -50,7 +49,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 获取单个Agent信息
      */
-    @Override
+    
     public AgentDTO getAgent(String agentId, String userId) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -67,7 +66,7 @@ public class AgentServiceImpl implements AgentService {
         return agent.toDTO();
     }
 
-    @Override
+    
     public List<AgentDTO> getUserAgents(String userId, SearchAgentsRequest searchAgentsRequest) {
         // 参数校验
         ValidationUtils.notEmpty(userId, "userId");
@@ -89,7 +88,7 @@ public class AgentServiceImpl implements AgentService {
      * 获取已上架的Agent列表，支持名称搜索
      * 当name为空时返回所有已上架Agent
      */
-    @Override
+    
     public List<AgentVersionDTO> getPublishedAgentsByName(SearchAgentsRequest searchAgentsRequest) {
         // 使用带名称和状态条件的查询
         List<AgentVersionEntity> latestVersions = agentVersionRepository.selectLatestVersionsByNameAndStatus(
@@ -103,7 +102,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 更新Agent信息（基本信息和配置合并更新）
      */
-    @Override
+    
     @Transactional
     public AgentDTO updateAgent(String agentId, AgentEntity updateEntity) {
         // 参数校验
@@ -120,7 +119,7 @@ public class AgentServiceImpl implements AgentService {
         return updateEntity.toDTO();
     }
 
-    @Override
+    
     public AgentDTO toggleAgentStatus(String agentId) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -145,7 +144,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 删除Agent
      */
-    @Override
+    
     @Transactional
     public void deleteAgent(String agentId, String userId) {
         // 参数校验
@@ -166,7 +165,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 获取Agent的最新版本
      */
-    @Override
+    
     public AgentVersionDTO getLatestAgentVersion(String agentId) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -184,7 +183,7 @@ public class AgentServiceImpl implements AgentService {
         return version.toDTO();
     }
 
-    @Override
+    
     public AgentVersionDTO publishAgentVersion(String agentId, AgentVersionEntity versionEntity) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -233,7 +232,7 @@ public class AgentServiceImpl implements AgentService {
         return versionEntity.toDTO();
     }
 
-    @Override
+    
     public List<AgentVersionDTO> getAgentVersions(String agentId, String userId) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -247,7 +246,7 @@ public class AgentServiceImpl implements AgentService {
         return versions.stream().map(AgentVersionEntity::toDTO).collect(Collectors.toList());
     }
 
-    @Override
+    
     public AgentVersionDTO getAgentVersion(String agentId, String versionNumber) {
         // 参数校验
         ValidationUtils.notEmpty(agentId, "agentId");
@@ -265,7 +264,7 @@ public class AgentServiceImpl implements AgentService {
         return version.toDTO();
     }
 
-    @Override
+    
     public List<AgentVersionDTO> getVersionsByStatus(PublishStatus status) {
 
         // 直接通过SQL查询每个agentId的最新版本
@@ -281,7 +280,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 拒绝版本发布
      */
-    @Override
+    
     @Transactional
     public AgentVersionDTO rejectVersion(String versionId, String reason) {
         // 参数校验
@@ -303,7 +302,7 @@ public class AgentServiceImpl implements AgentService {
     /**
      * 更新版本发布状态
      */
-    @Override
+    
     @Transactional
     public AgentVersionDTO updateVersionPublishStatus(String versionId, PublishStatus status) {
         // 参数校验

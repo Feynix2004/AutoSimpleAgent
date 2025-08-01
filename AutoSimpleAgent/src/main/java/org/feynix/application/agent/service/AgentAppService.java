@@ -3,7 +3,7 @@ package org.feynix.application.agent.service;
 
 import org.feynix.application.agent.assembler.AgentAssembler;
 import org.feynix.domain.agent.model.*;
-import org.feynix.domain.agent.service.AgentService;
+import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.infrastructure.exception.ParamValidationException;
 import org.feynix.interfaces.dto.agent.*;
 import org.springframework.stereotype.Service;
@@ -23,9 +23,9 @@ public class AgentAppService {
 
 
 
-    private final AgentService agentService;
+    private final AgentDomainService agentService;
 
-    public AgentAppService(AgentService agentService) {
+    public AgentAppService(AgentDomainService agentService) {
         this.agentService = agentService;
     }
 
