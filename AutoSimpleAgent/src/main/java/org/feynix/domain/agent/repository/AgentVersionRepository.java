@@ -40,4 +40,21 @@ public interface AgentVersionRepository extends BaseMapper<AgentVersionEntity> {
             "</script>"
     })
     List<AgentVersionEntity> selectLatestVersionsByNameAndStatus(String name, Integer code);
+
+    /**
+     * 查询每个agentId的最新版本（按publishStatus过滤）
+     *
+     * @param publishStatus 发布状态，为null时查询所有状态
+     * @return 每个agentId的最新版本列表
+     */
+    @Select("<script>" +
+            "SELECT a.* FROM agent_versions a " +
+            "INNER JOIN (SELECT agent_id, MAX(published_at) as max_published_at " +
+            "FROM agent_versions " +
+            "<if test='publishStatus != null'> WHERE publish_status = #{publishStatus} </if>" +
+            "GROUP BY agent_id) b " +
+            "ON a.agent_id = b.agent_id AND a.published_at = b.max_published_at " +
+            "<if test='publishStatus != null'> WHERE a.publish_status = #{publishStatus} </if>" +
+            "</script>")
+    List<AgentVersionEntity> selectLatestVersionsByStatus(Integer publishStatus);
 }

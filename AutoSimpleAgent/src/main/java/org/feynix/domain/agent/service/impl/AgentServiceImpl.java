@@ -10,7 +10,7 @@ import org.feynix.domain.agent.repository.AgentVersionRepository;
 import org.feynix.domain.agent.service.AgentService;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.domain.common.util.ValidationUtils;
-import org.feynix.interfaces.api.dto.SearchAgentsRequest;
+import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -260,6 +260,74 @@ public class AgentServiceImpl implements AgentService {
         AgentVersionEntity version = agentVersionRepository.selectOne(queryWrapper);
         if (version == null) {
             throw new BusinessException("版本不存在: " + versionNumber);
+        }
+
+        return version.toDTO();
+    }
+
+    @Override
+    public List<AgentVersionDTO> getVersionsByStatus(PublishStatus status) {
+
+        // 直接通过SQL查询每个agentId的最新版本
+        List<AgentVersionEntity> latestVersions = agentVersionRepository
+                .selectLatestVersionsByStatus(status == null ? null : status.getCode());
+
+        // 转换为DTO列表并返回
+        return latestVersions.stream()
+                .map(AgentVersionEntity::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 拒绝版本发布
+     */
+    @Override
+    @Transactional
+    public AgentVersionDTO rejectVersion(String versionId, String reason) {
+        // 参数校验
+        ValidationUtils.notEmpty(versionId, "versionId");
+        ValidationUtils.notEmpty(reason, "reason");
+
+        AgentVersionEntity version = agentVersionRepository.selectById(versionId);
+        if (version == null) {
+            throw new BusinessException("版本不存在: " + versionId);
+        }
+
+        // 拒绝版本发布
+        version.reject(reason);
+        agentVersionRepository.updateById(version);
+
+        return version.toDTO();
+    }
+
+    /**
+     * 更新版本发布状态
+     */
+    @Override
+    @Transactional
+    public AgentVersionDTO updateVersionPublishStatus(String versionId, PublishStatus status) {
+        // 参数校验
+        ValidationUtils.notEmpty(versionId, "versionId");
+        ValidationUtils.notNull(status, "status");
+
+        AgentVersionEntity version = agentVersionRepository.selectById(versionId);
+        if (version == null) {
+            throw new BusinessException("版本不存在: " + versionId);
+        }
+
+        version.setRejectReason("");
+
+        // 更新版本状态
+        version.updatePublishStatus(status);
+        agentVersionRepository.updateById(version);
+
+        // 如果状态更新为已发布，则绑定为Agent的publishedVersion
+        if (status == PublishStatus.PUBLISHED) {
+            AgentEntity agent = agentRepository.selectById(version.getAgentId());
+            if (agent != null) {
+                agent.publishVersion(versionId);
+                agentRepository.updateById(agent);
+            }
         }
 
         return version.toDTO();

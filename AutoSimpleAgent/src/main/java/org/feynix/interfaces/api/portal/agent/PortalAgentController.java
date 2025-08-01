@@ -1,9 +1,9 @@
 package org.feynix.interfaces.api.portal.agent;
 
-import org.feynix.interfaces.api.dto.CreateAgentRequest;
-import org.feynix.interfaces.api.dto.PublishAgentVersionRequest;
-import org.feynix.interfaces.api.dto.SearchAgentsRequest;
-import org.feynix.interfaces.api.dto.UpdateAgentRequest;
+import org.feynix.interfaces.dto.agent.CreateAgentRequest;
+import org.feynix.interfaces.dto.agent.PublishAgentVersionRequest;
+import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
+import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
 import org.springframework.web.bind.annotation.*;
 import org.feynix.application.agent.service.AgentAppService;
 import org.feynix.domain.agent.model.AgentDTO;

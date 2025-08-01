@@ -2,16 +2,10 @@ package org.feynix.application.agent.service;
 
 
 import org.feynix.application.agent.assembler.AgentAssembler;
-import org.feynix.domain.agent.model.AgentDTO;
-import org.feynix.domain.agent.model.AgentEntity;
-import org.feynix.domain.agent.model.AgentVersionDTO;
-import org.feynix.domain.agent.model.AgentVersionEntity;
+import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.service.AgentService;
 import org.feynix.infrastructure.exception.ParamValidationException;
-import org.feynix.interfaces.api.dto.CreateAgentRequest;
-import org.feynix.interfaces.api.dto.PublishAgentVersionRequest;
-import org.feynix.interfaces.api.dto.SearchAgentsRequest;
-import org.feynix.interfaces.api.dto.UpdateAgentRequest;
+import org.feynix.interfaces.dto.agent.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -142,5 +136,32 @@ public class AgentAppService {
      */
     public AgentVersionDTO getLatestAgentVersion(String agentId) {
         return agentService.getLatestAgentVersion(agentId);
+    }
+
+    /**
+     * 根据发布状态获取版本列表
+     *
+     * @param status 发布状态
+     * @return 版本列表（每个助理只返回最新版本）
+     */
+    public List<AgentVersionDTO> getVersionsByStatus(PublishStatus status) {
+        return agentService.getVersionsByStatus(status);
+    }
+
+    /**
+     * 审核Agent版本
+     */
+    public AgentVersionDTO reviewAgentVersion(String versionId, ReviewAgentVersionRequest request) {
+        // 在应用层验证请求
+        request.validate();
+        // 根据状态执行相应操作
+        if (PublishStatus.REJECTED.equals(request.getStatus())) {
+            // 拒绝发布，需使用拒绝原因
+            return agentService.rejectVersion(versionId, request.getRejectReason());
+        }else {
+            // 其他状态变更，直接更新状态
+            return agentService.updateVersionPublishStatus(versionId, request.getStatus());
+        }
+
     }
 }

@@ -1,10 +1,7 @@
 package org.feynix.domain.agent.service;
 
-import org.feynix.domain.agent.model.AgentDTO;
-import org.feynix.domain.agent.model.AgentEntity;
-import org.feynix.domain.agent.model.AgentVersionDTO;
-import org.feynix.domain.agent.model.AgentVersionEntity;
-import org.feynix.interfaces.api.dto.SearchAgentsRequest;
+import org.feynix.domain.agent.model.*;
+import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 
 import java.util.List;
 
@@ -103,4 +100,30 @@ public interface AgentService {
      * @return 版本信息
      */
     AgentVersionDTO getAgentVersion(String agentId, String versionNumber);
+
+    /**
+     * 获取指定状态的所有版本
+     *
+     * @param status 版本状态，不能为空
+     * @return 符合状态的版本列表
+     */
+    List<AgentVersionDTO> getVersionsByStatus(PublishStatus status);
+
+    /**
+     * 拒绝版本发布
+     *
+     * @param versionId 版本ID，不能为空
+     * @param reason    拒绝原因，不能为空
+     * @return 更新后的版本信息
+     */
+    AgentVersionDTO rejectVersion(String versionId, String reason);
+
+    /**
+     * 更新版本发布状态
+     *
+     * @param versionId 版本ID，不能为空
+     * @param status    发布状态，不能为空
+     * @return 更新后的版本信息
+     */
+    AgentVersionDTO updateVersionPublishStatus(String versionId, PublishStatus status);
 }

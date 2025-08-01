@@ -1,4 +1,4 @@
-package org.feynix.interfaces.api.dto;
+package org.feynix.interfaces.dto.agent;
 
 
 /**

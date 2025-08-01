@@ -1,9 +1,9 @@
 package org.feynix.application.agent.assembler;
 
 import org.feynix.domain.agent.model.*;
-import org.feynix.interfaces.api.dto.CreateAgentRequest;
-import org.feynix.interfaces.api.dto.PublishAgentVersionRequest;
-import org.feynix.interfaces.api.dto.UpdateAgentRequest;
+import org.feynix.interfaces.dto.agent.CreateAgentRequest;
+import org.feynix.interfaces.dto.agent.PublishAgentVersionRequest;
+import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
