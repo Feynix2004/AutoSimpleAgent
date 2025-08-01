@@ -8,7 +8,7 @@ import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentVersionRepository;
 import org.feynix.domain.agent.service.AgentService;
-import org.feynix.domain.common.exception.BusinessException;
+import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.domain.common.util.ValidationUtils;
 import org.feynix.interfaces.api.dto.SearchAgentsRequest;
 import org.springframework.stereotype.Service;

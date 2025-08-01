@@ -7,7 +7,7 @@ import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentVersionDTO;
 import org.feynix.domain.agent.model.AgentVersionEntity;
 import org.feynix.domain.agent.service.AgentService;
-import org.feynix.domain.common.exception.ParamValidationException;
+import org.feynix.infrastructure.exception.ParamValidationException;
 import org.feynix.interfaces.api.dto.CreateAgentRequest;
 import org.feynix.interfaces.api.dto.PublishAgentVersionRequest;
 import org.feynix.interfaces.api.dto.SearchAgentsRequest;

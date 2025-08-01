@@ -6,7 +6,7 @@ import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 import org.feynix.domain.agent.model.AgentTool;
 import org.feynix.domain.agent.model.ModelConfig;
-import org.feynix.domain.common.exception.ParamValidationException;
+import org.feynix.infrastructure.exception.ParamValidationException;
 import org.feynix.infrastructure.util.JsonUtils;
 import org.postgresql.util.PGobject;
 

@@ -1,6 +1,6 @@
 package org.feynix.domain.common.util;
 
-import org.feynix.domain.common.exception.ParamValidationException;
+import org.feynix.infrastructure.exception.ParamValidationException;
 
 import java.util.Collection;
 import java.util.regex.Pattern;

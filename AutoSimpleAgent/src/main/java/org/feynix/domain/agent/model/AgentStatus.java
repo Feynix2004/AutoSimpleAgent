@@ -1,6 +1,6 @@
 package org.feynix.domain.agent.model;
 
-import org.feynix.domain.common.exception.BusinessException;
+import org.feynix.infrastructure.exception.BusinessException;
 
 /**
  * Agent状态枚举

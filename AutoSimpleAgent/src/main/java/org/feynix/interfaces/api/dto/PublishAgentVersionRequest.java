@@ -1,7 +1,7 @@
 package org.feynix.interfaces.api.dto;
 
 
-import org.feynix.domain.common.exception.ParamValidationException;
+import org.feynix.infrastructure.exception.ParamValidationException;
 
 import java.util.regex.Pattern;
 

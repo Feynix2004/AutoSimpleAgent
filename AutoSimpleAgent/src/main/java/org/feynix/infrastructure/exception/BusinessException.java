@@ -1,4 +1,4 @@
-package org.feynix.domain.common.exception;
+package org.feynix.infrastructure.exception;
 /**
  * 业务异常类
  */
