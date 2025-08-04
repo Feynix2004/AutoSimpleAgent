@@ -48,4 +48,8 @@ public class AgentWorkspaceDomainService {
         return agentWorkspaceRepository.delete(Wrappers.<AgentWorkspaceEntity>lambdaQuery()
                 .eq(AgentWorkspaceEntity::getAgentId, agentId).eq(AgentWorkspaceEntity::getUserId, userId)) > 0;
     }
+
+    public boolean checkAgentWorkspaceExist(String agentId, String userId) {
+        return agentWorkspaceRepository.checkAgentWorkspaceExist(agentId,userId);
+    }
 }

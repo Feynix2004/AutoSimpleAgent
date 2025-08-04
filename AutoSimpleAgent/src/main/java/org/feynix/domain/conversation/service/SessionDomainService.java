@@ -5,6 +5,7 @@ import org.feynix.application.conversation.assembler.SessionAssembler;
 import org.feynix.domain.conversation.dto.SessionDTO;
 import org.feynix.domain.conversation.model.SessionEntity;
 import org.feynix.domain.conversation.repository.SessionRepository;
+import org.feynix.infrastructure.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +35,70 @@ public class SessionDomainService {
     public void deleteSessions(List<String> sessionIds) {
         sessionRepository.delete(Wrappers.<SessionEntity>lambdaQuery()
                 .in(SessionEntity::getId, sessionIds));
+    }
+
+    public SessionEntity find(String sessionId, String userId) {
+        SessionEntity session = sessionRepository.selectOne(Wrappers.<SessionEntity>lambdaQuery()
+                .eq(SessionEntity::getId, sessionId).eq(SessionEntity::getUserId, userId));
+
+        return session;
+    }
+
+    /**
+     * 创建会话
+     *
+     * @param agentId 助理id
+     * @param userId  用户id
+     * @return
+     */
+    public SessionDTO createSession(String agentId, String userId) {
+        SessionEntity session = new SessionEntity();
+        session.setAgentId(agentId);
+        session.setUserId(userId);
+        session.setTitle("新会话");
+        sessionRepository.insert(session);
+        return SessionAssembler.toDTO(session);
+    }
+
+    /**
+     * 更新会话
+     *
+     * @param id     会话id
+     * @param userId 用户id
+     * @param title  标题
+     */
+    public void updateSession(String id, String userId, String title) {
+        SessionEntity session = new SessionEntity();
+        session.setId(id);
+        session.setUserId(userId);
+        session.setTitle(title);
+        sessionRepository.update(session, Wrappers.<SessionEntity>lambdaUpdate()
+                .eq(SessionEntity::getId, id).eq(SessionEntity::getUserId, userId));
+    }
+
+    /**
+     * 删除会话
+     *
+     * @param id
+     * @param userId
+     */
+    public boolean deleteSession(String id, String userId) {
+        return sessionRepository.delete(Wrappers.<SessionEntity>lambdaQuery()
+                .eq(SessionEntity::getId, id).eq(SessionEntity::getUserId, userId)) > 0;
+    }
+
+    /**
+     * 检查会话是否存在
+     *
+     * @param id
+     * @param userId
+     * @return
+     */
+    public void checkSessionExist(String id, String userId) {
+        SessionEntity session = sessionRepository.selectOne(Wrappers.<SessionEntity>lambdaQuery()
+                .eq(SessionEntity::getId, id).eq(SessionEntity::getUserId, userId));
+        if (session == null) {
+            throw new BusinessException("会话不存在");
+        }
     }
 }

@@ -4,12 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import org.feynix.application.agent.assembler.AgentAssembler;
+import org.feynix.application.agent.assembler.AgentVersionAssembler;
 import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentVersionRepository;
+import org.feynix.domain.agent.repository.AgentWorkspaceRepository;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.domain.common.util.ValidationUtils;
 import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +28,12 @@ public class AgentDomainService{
 
     private final AgentRepository agentRepository;
     private final AgentVersionRepository agentVersionRepository;
+    private final AgentWorkspaceRepository agentWorkspaceRepository;
 
-    public AgentDomainService(AgentRepository agentRepository, AgentVersionRepository agentVersionRepository) {
+    public AgentDomainService(AgentRepository agentRepository, AgentVersionRepository agentVersionRepository, AgentWorkspaceRepository agentWorkspaceRepository) {
         this.agentRepository = agentRepository;
         this.agentVersionRepository = agentVersionRepository;
+        this.agentWorkspaceRepository = agentWorkspaceRepository;
     }
 
     /**
@@ -411,4 +417,53 @@ public class AgentDomainService{
                 .filter(dto -> dto != null)
                 .collect(Collectors.toList());
     }
+
+    public boolean checkAgentExist(String agentId, String userId) {
+        LambdaQueryWrapper<AgentEntity> wrapper = Wrappers.<AgentEntity>lambdaQuery()
+                .eq(AgentEntity::getId, agentId)
+                .eq(AgentEntity::getUserId, userId);
+        AgentEntity agent = agentRepository.selectOne(wrapper);
+        return agent !=null;
+
+    }
+
+    public AgentDTO getAgentWithPermissionCheck(String agentId, String userId) {
+        // 检查工作区是否存在
+        boolean b1 = agentWorkspaceRepository.checkAgentWorkspaceExist(agentId, userId);
+
+        boolean b2 = checkAgentExist(agentId, userId);
+        if (!b1 && !b2){
+            throw new BusinessException("助理不存在");
+        }
+        AgentDTO agentDTO = getAgentById(agentId);
+
+        // 如果有版本则使用版本
+        String publishedVersion = agentDTO.getPublishedVersion();
+        if (!StringUtils.isEmpty(publishedVersion)) {
+            AgentVersionDTO agentVersion =  getAgentVersionById(publishedVersion);
+            BeanUtils.copyProperties(agentVersion,agentDTO);
+        }
+
+        return agentDTO;
+    }
+
+    public AgentVersionDTO getAgentVersionById(String versionId){
+        AgentVersionEntity agentVersion = agentVersionRepository.selectById(versionId);
+        return AgentVersionAssembler.toDTO(agentVersion);
+    }
+
+    public AgentDTO getAgentById(String agentId) {
+        return this.getAgentsByIds(Collections.singletonList(agentId)).get(0);
+    }
+
+    /**
+     * 根据 agentIds 获取 agents
+     * /**
+     * 根据 agentIds 获取 agents
+     */
+    public List<AgentDTO> getAgentsByIds(List<String> agentIds) {
+        List<AgentEntity> agents = agentRepository.selectBatchIds(agentIds);
+        return agents.stream().map(AgentAssembler::toDTO).collect(Collectors.toList());
+    }
+
 }

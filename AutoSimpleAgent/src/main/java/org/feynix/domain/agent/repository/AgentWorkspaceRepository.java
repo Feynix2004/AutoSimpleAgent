@@ -9,4 +9,5 @@ import org.feynix.domain.agent.model.AgentWorkspaceEntity;
  */
 @Mapper
 public interface AgentWorkspaceRepository extends BaseMapper<AgentWorkspaceEntity> {
+    boolean checkAgentWorkspaceExist(String agentId, String userId);
 }

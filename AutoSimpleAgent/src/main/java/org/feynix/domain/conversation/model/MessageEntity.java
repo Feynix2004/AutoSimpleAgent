@@ -91,6 +91,31 @@ public class MessageEntity extends Model<MessageEntity> {
         this.metadata = metadata;
     }
 
+
+    /**
+     * 创建助手消息
+     */
+    public static MessageEntity createAssistantMessage(String sessionId, String content, String provider, String model, int tokenCount) {
+        MessageEntity message = new MessageEntity();
+        message.setSessionId(sessionId);
+        message.setRole("assistant");
+        message.setContent(content);
+        message.setCreatedAt(LocalDateTime.now());
+        message.setProvider(provider);
+        message.setModel(model);
+        message.setTokenCount(tokenCount);
+        return message;
+    }
+
+    public static MessageEntity createUserMessage(String sessionId, String content) {
+        MessageEntity message = new MessageEntity();
+        message.setSessionId(sessionId);
+        message.setRole("user");
+        message.setContent(content);
+        message.setCreatedAt(LocalDateTime.now());
+        return message;
+    }
+
     // Getter和Setter方法
     public String getId() {
         return id;
