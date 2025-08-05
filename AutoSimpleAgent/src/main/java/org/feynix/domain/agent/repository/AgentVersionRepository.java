@@ -2,6 +2,7 @@ package org.feynix.domain.agent.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentVersionEntity;
@@ -39,7 +40,7 @@ public interface AgentVersionRepository extends BaseMapper<AgentVersionEntity> {
             "</if>",
             "</script>"
     })
-    List<AgentVersionEntity> selectLatestVersionsByNameAndStatus(String name, Integer code);
+    List<AgentVersionEntity> selectLatestVersionsByNameAndStatus(@Param("name")String name,  @Param("status") Integer status);
 
     /**
      * 查询每个agentId的最新版本（按publishStatus过滤）
@@ -56,5 +57,5 @@ public interface AgentVersionRepository extends BaseMapper<AgentVersionEntity> {
             "ON a.agent_id = b.agent_id AND a.published_at = b.max_published_at " +
             "<if test='publishStatus != null'> WHERE a.publish_status = #{publishStatus} </if>" +
             "</script>")
-    List<AgentVersionEntity> selectLatestVersionsByStatus(Integer publishStatus);
+    List<AgentVersionEntity> selectLatestVersionsByStatus(@Param("publishStatus")Integer publishStatus);
 }

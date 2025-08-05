@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.feynix.infrastructure.integration.LLM.siliconflow.SiliconFlowLLMService
+import org.feynix.infrastructure.integration.LLM.siliconflow.SiliconFlowLLMService;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;

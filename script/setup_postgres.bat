@@ -1,3 +1,4 @@
+chcp 65001
 @echo off
 @REM 设置颜色代码
 set GREEN=[32m

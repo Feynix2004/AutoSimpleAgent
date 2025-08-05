@@ -1,3 +1,4 @@
+chcp 65001
 @echo off
 @REM 设置颜色代码
 set GREEN=[32m
@@ -15,7 +16,7 @@ set "SQL_DIR=%PROJECT_ROOT%\docs\sql"
 @REM 切换到脚本目录
 cd "%SCRIPT_DIR%"
 
-echo %GREEN%AgentX PostgreSQL 数据库初始化脚本 (Docker Compose 版)%NC%
+echo %GREEN%ASAgent PostgreSQL 数据库初始化脚本 (Docker Compose 版)%NC%
 echo ===============================================
 echo 数据库名称: agentx
 echo 数据库用户: postgres

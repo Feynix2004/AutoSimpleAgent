@@ -2,6 +2,8 @@ package org.feynix.domain.agent.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.feynix.domain.agent.model.AgentWorkspaceEntity;
 
 /**
@@ -9,5 +11,6 @@ import org.feynix.domain.agent.model.AgentWorkspaceEntity;
  */
 @Mapper
 public interface AgentWorkspaceRepository extends BaseMapper<AgentWorkspaceEntity> {
-    boolean checkAgentWorkspaceExist(String agentId, String userId);
+    @Select("SELECT EXISTS(SELECT 1 FROM agent_workspace WHERE agent_id = #{agentId} AND user_id = #{userId})")
+    boolean checkAgentWorkspaceExist(@Param("agentId") String agentId, @Param("userId") String userId);
 }
