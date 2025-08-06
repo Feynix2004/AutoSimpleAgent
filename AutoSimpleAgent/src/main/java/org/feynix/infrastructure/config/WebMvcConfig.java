@@ -1,6 +1,7 @@
 package org.feynix.infrastructure.config;
 
 import org.feynix.infrastructure.auth.UserAuthInterceptor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -8,6 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Web MVC 配置类
  * 用于配置拦截器、跨域等
  */
+
+/**
+ * Web MVC 配置类
+ * 用于配置拦截器、跨域等
+ */
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {    private final UserAuthInterceptor userAuthInterceptor;
 
     public WebMvcConfig(UserAuthInterceptor userAuthInterceptor) {

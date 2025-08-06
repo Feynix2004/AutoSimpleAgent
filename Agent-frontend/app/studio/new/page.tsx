@@ -22,7 +22,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
 // 在文件顶部添加导入
-import { createAgent } from "@/lib/agent-service"
+import { createAgent, createAgentWithToast } from "@/lib/agent-service"
 import { API_CONFIG } from "@/lib/api-config"
 
 // 应用类型定义
@@ -81,11 +81,6 @@ interface AgentFormData {
   description: string
   systemPrompt: string
   welcomeMessage: string
-  modelConfig: {
-    model: string
-    temperature: number
-    maxTokens: number
-  }
   tools: string[]
   knowledgeBaseIds: string[]
   status: number
@@ -105,11 +100,6 @@ export default function CreateAgentPage() {
     description: "",
     systemPrompt: "你是一个有用的AI助手。",
     welcomeMessage: "你好！我是你的AI助手，有什么可以帮助你的吗？",
-    modelConfig: {
-      model: "gpt-4o",
-      temperature: 0.7,
-      maxTokens: 2000,
-    },
     tools: [],
     knowledgeBaseIds: [],
     status: 0, // 默认为私有
@@ -120,17 +110,6 @@ export default function CreateAgentPage() {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
-
-  // 更新模型配置
-  const updateModelConfig = (field: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      modelConfig: {
-        ...prev.modelConfig,
-        [field]: value,
-      },
     }))
   }
 
@@ -204,7 +183,7 @@ export default function CreateAgentPage() {
     fileInputRef.current?.click()
   }
 
-  // 在handleCreateAgent函数中替换模拟API调用部分
+  // 处理创建助理
   const handleCreateAgent = async () => {
     if (!formData.name.trim()) {
       toast({
@@ -222,13 +201,13 @@ export default function CreateAgentPage() {
         name: formData.name,
         avatar: formData.avatar,
         description: formData.description || "",
-        agentType: selectedType === "chat" ? "CHAT_ASSISTANT" : "FUNCTIONAL_AGENT",
+        agentType: selectedType === "chat" ? "CHAT_ASSISTANT" : "FUNCTIONAL_AGENT" as "CHAT_ASSISTANT" | "FUNCTIONAL_AGENT",
         systemPrompt: selectedType === "chat" ? formData.systemPrompt : "",
         welcomeMessage: selectedType === "chat" ? formData.welcomeMessage : "",
         modelConfig: {
-          modelName: formData.modelConfig.model,
-          temperature: formData.modelConfig.temperature,
-          maxTokens: formData.modelConfig.maxTokens,
+          modelName: "gpt-4o", // 使用默认模型
+          temperature: 0.7,
+          maxTokens: 2000
         },
         tools: formData.tools.map((toolId) => {
           const tool = toolOptions.find((t) => t.id === toolId)
@@ -242,8 +221,8 @@ export default function CreateAgentPage() {
         userId: API_CONFIG.CURRENT_USER_ID,
       }
 
-      // 调用API创建Agent
-      const response = await createAgent(agentData)
+      // 调用API创建助理
+      const response = await createAgentWithToast(agentData)
 
       if (response.code === 200) {
         toast({
@@ -278,13 +257,11 @@ export default function CreateAgentPage() {
       return [
         { id: "basic", label: "基本信息" },
         { id: "prompt", label: "提示词配置" },
-        { id: "model", label: "模型配置" },
         { id: "tools", label: "工具与知识库" },
       ]
     } else {
       return [
         { id: "basic", label: "基本信息" },
-        { id: "model", label: "模型配置" },
         { id: "tools", label: "工具配置" },
       ]
     }
@@ -473,70 +450,6 @@ export default function CreateAgentPage() {
               </TabsContent>
             )}
 
-            <TabsContent value="model" className="space-y-6">
-              {/* 模型选择 */}
-              <div>
-                <h2 className="text-lg font-medium mb-2">选择模型</h2>
-                <p className="text-sm text-muted-foreground mb-2">
-                  选择{selectedType === "chat" ? "聊天助理" : "功能性助理"}使用的大语言模型
-                </p>
-                <Select value={formData.modelConfig.model} onValueChange={(value) => updateModelConfig("model", value)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="选择模型" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {modelOptions.map((model) => (
-                      <SelectItem key={model.value} value={model.value}>
-                        {model.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* 温度设置 */}
-              <div>
-                <h2 className="text-lg font-medium mb-2">温度</h2>
-                <p className="text-sm text-muted-foreground mb-2">
-                  控制输出的随机性：较低的值使输出更确定，较高的值使输出更多样化
-                </p>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm">精确</span>
-                    <span className="text-sm font-medium">{formData.modelConfig.temperature.toFixed(1)}</span>
-                    <span className="text-sm">创意</span>
-                  </div>
-                  <Slider
-                    value={[formData.modelConfig.temperature]}
-                    min={0}
-                    max={1}
-                    step={0.1}
-                    onValueChange={(value) => updateModelConfig("temperature", value[0])}
-                  />
-                </div>
-              </div>
-
-              {/* 最大Token */}
-              <div>
-                <h2 className="text-lg font-medium mb-2">最大输出Token</h2>
-                <p className="text-sm text-muted-foreground mb-2">限制模型单次回复的最大长度</p>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm">简短</span>
-                    <span className="text-sm font-medium">{formData.modelConfig.maxTokens}</span>
-                    <span className="text-sm">详细</span>
-                  </div>
-                  <Slider
-                    value={[formData.modelConfig.maxTokens]}
-                    min={500}
-                    max={4000}
-                    step={100}
-                    onValueChange={(value) => updateModelConfig("maxTokens", value[0])}
-                  />
-                </div>
-              </div>
-            </TabsContent>
-
             <TabsContent value="tools" className="space-y-6">
               {/* 工具选择 */}
               <div>
@@ -627,7 +540,7 @@ export default function CreateAgentPage() {
                   </Avatar>
                   <span className="font-medium">{formData.name || "新建聊天助理"}</span>
                 </div>
-                <Badge variant="outline">{formData.modelConfig.model}</Badge>
+                <Badge variant="outline">默认模型</Badge>
               </div>
 
               <div className="h-[500px] flex flex-col">
@@ -705,7 +618,7 @@ export default function CreateAgentPage() {
                   </Avatar>
                   <span className="font-medium">{formData.name || "新建功能性助理"}</span>
                 </div>
-                <Badge variant="outline">{formData.modelConfig.model}</Badge>
+                <Badge variant="outline">默认模型</Badge>
               </div>
 
               <div className="h-[500px] flex flex-col">
@@ -810,14 +723,6 @@ export default function CreateAgentPage() {
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">类型</span>
                   <span className="text-sm font-medium">{selectedType === "chat" ? "聊天助理" : "功能性助理"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">模型</span>
-                  <span className="text-sm font-medium">{formData.modelConfig.model}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">温度</span>
-                  <span className="text-sm font-medium">{formData.modelConfig.temperature.toFixed(1)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">工具数量</span>

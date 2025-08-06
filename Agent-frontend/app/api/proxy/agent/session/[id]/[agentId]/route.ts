@@ -1,22 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { API_CONFIG } from "@/lib/api-config"
 
-// 直接使用环境变量，不再附加"/api"
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://68c8ff2.r3.cpolar.top/api"
-
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // 从请求URL中获取查询参数
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get("userId") || "1"
-    const archived = searchParams.get("archived")
+    const agentId = params.id
 
     // 构建API URL
-    let apiUrl = `${API_BASE_URL}/conversation/session?userId=${userId}`
-    if (archived !== null) {
-      apiUrl += `&archived=${archived}`
-    }
+    const apiUrl = `${API_CONFIG.BASE_URL}/agent/session/${agentId}`
 
-    console.log(`Proxying request to: ${apiUrl}`)
+    console.log(`Proxying GET request to: ${apiUrl}`)
 
     // 发送请求到外部API
     const response = await fetch(apiUrl, {
@@ -40,7 +32,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error in session proxy API route:", error)
+    console.error("Error in agent session proxy API route:", error)
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
       { status: 500 },
@@ -48,23 +40,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // 从请求URL中获取查询参数
-    const { searchParams } = new URL(request.url)
-    const title = searchParams.get("title")
-    const userId = searchParams.get("userId") || "1"
-    const description = searchParams.get("description")
-
-    if (!title) {
-      return NextResponse.json({ error: "title is required" }, { status: 400 })
-    }
+    const agentId = params.id
 
     // 构建API URL
-    let apiUrl = `${API_BASE_URL}/conversation/session?title=${encodeURIComponent(title)}&userId=${userId}`
-    if (description) {
-      apiUrl += `&description=${encodeURIComponent(description)}`
-    }
+    const apiUrl = `${API_CONFIG.BASE_URL}/agent/session/${agentId}`
 
     console.log(`Proxying POST request to: ${apiUrl}`)
 
@@ -90,7 +71,7 @@ export async function POST(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error in session proxy API route:", error)
+    console.error("Error in agent session proxy API route:", error)
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
       { status: 500 },

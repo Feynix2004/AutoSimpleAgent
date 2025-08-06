@@ -1,36 +1,28 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { API_CONFIG } from "@/lib/api-config"
 
-// API基础URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8080"
-
-export async function GET(request: NextRequest) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // 从请求URL中获取查询参数
+    const sessionId = params.id
     const { searchParams } = new URL(request.url)
-    const userId = searchParams.get("userId")
-    const archived = searchParams.get("archived")
+    const title = searchParams.get("title")
 
-    if (!userId) {
-      return NextResponse.json({ error: "userId is required" }, { status: 400 })
+    if (!title) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
     }
 
     // 构建API URL
-    let apiUrl = `${API_BASE_URL}/api/conversation/session?userId=${userId}`
-    if (archived !== null) {
-      apiUrl += `&archived=${archived}`
-    }
+    const apiUrl = `${API_CONFIG.BASE_URL}/agent/session/${sessionId}?title=${encodeURIComponent(title)}`
 
-    console.log(`Proxying request to: ${apiUrl}`)
+    console.log(`Proxying PUT request to: ${apiUrl}`)
 
     // 发送请求到外部API
     const response = await fetch(apiUrl, {
-      method: "GET",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Accept: "*/*",
       },
-      // 增加超时时间
-      signal: AbortSignal.timeout(10000), // 10秒超时
     })
 
     // 检查响应状态
@@ -46,7 +38,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error in session proxy API route:", error)
+    console.error("Error in agent session proxy API route:", error)
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
       { status: 500 },
@@ -54,35 +46,22 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // 从请求URL中获取查询参数
-    const { searchParams } = new URL(request.url)
-    const title = searchParams.get("title")
-    const userId = searchParams.get("userId")
-    const description = searchParams.get("description")
-
-    if (!title || !userId) {
-      return NextResponse.json({ error: "title and userId are required" }, { status: 400 })
-    }
+    const sessionId = params.id
 
     // 构建API URL
-    let apiUrl = `${API_BASE_URL}/api/conversation/session?title=${encodeURIComponent(title)}&userId=${userId}`
-    if (description) {
-      apiUrl += `&description=${encodeURIComponent(description)}`
-    }
+    const apiUrl = `${API_CONFIG.BASE_URL}/agent/session/${sessionId}`
 
-    console.log(`Proxying POST request to: ${apiUrl}`)
+    console.log(`Proxying DELETE request to: ${apiUrl}`)
 
     // 发送请求到外部API
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Accept: "*/*",
       },
-      // 增加超时时间
-      signal: AbortSignal.timeout(10000), // 10秒超时
     })
 
     // 检查响应状态
@@ -98,7 +77,7 @@ export async function POST(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error("Error in session proxy API route:", error)
+    console.error("Error in agent session proxy API route:", error)
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
       { status: 500 },

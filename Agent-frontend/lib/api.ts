@@ -1,26 +1,21 @@
-export async function streamChat(message: string, sessionId?: string, signal?: AbortSignal) {
+export async function streamChat(message: string, sessionId?: string) {
   if (!sessionId) {
     throw new Error("Session ID is required")
   }
 
-  // 使用后端的流式聊天接口
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api"
-  
-  // 确保参数与后端ChatStreamGet方法匹配
-  const url = `${API_BASE_URL}/conversation/chat/stream?message=${encodeURIComponent(message)}&sessionId=${sessionId}`
+  // 修改URL直接请求本地8080端口的后端服务
+  const url = new URL(`http://localhost:8080/api/agent/session/${sessionId}/message`)
 
   // 发送请求
   try {
-    console.log("发送流式聊天请求:", url) // 添加日志以便调试
+    console.log("发送聊天请求:", url.toString()) // 添加日志以便调试
     const response = await fetch(url, {
-      method: "GET",
+      method: "POST",
       headers: {
-        Accept: "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        Accept: "*/*",
       },
-      // 使用传入的signal用于取消请求
-      signal,
+      body: JSON.stringify({ message }),
     })
 
     if (!response.ok) {

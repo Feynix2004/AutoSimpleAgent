@@ -11,7 +11,7 @@ import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentVersionRepository;
 import org.feynix.domain.agent.repository.AgentWorkspaceRepository;
 import org.feynix.infrastructure.exception.BusinessException;
-import org.feynix.domain.common.util.ValidationUtils;
+import org.feynix.infrastructure.util.ValidationUtils;
 import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class AgentDomainService{
 
         // 保存到数据库
         agentRepository.insert(agent);
-        return agent.toDTO();
+        return AgentAssembler.toDTO(agent);
     }
 
     /**

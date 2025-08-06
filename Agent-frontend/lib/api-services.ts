@@ -5,7 +5,7 @@ import type {
   Session,
   UpdateSessionParams,
 } from "@/types/conversation"
-import { API_ENDPOINTS, buildApiUrl } from "@/lib/api-config"
+import { withToast } from "./toast-utils"
 
 // 构建查询字符串
 function buildQueryString(params: Record<string, any>): string {
@@ -27,20 +27,15 @@ function buildQueryString(params: Record<string, any>): string {
 // 创建会话
 export async function createSession(params: CreateSessionParams): Promise<ApiResponse<Session>> {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.SESSIONS)
-
-    console.log(`Creating session with URL: ${url}`)
-
-    // 移除userId参数，由后端自动获取
-    const { userId, ...requestData } = params
+    const queryString = buildQueryString(params)
+    const url = `http://localhost:8080/api/sessions${queryString}`
 
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Accept: "*/*",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestData),
     })
 
     const data = await response.json()
@@ -56,7 +51,7 @@ export async function createSession(params: CreateSessionParams): Promise<ApiRes
     return {
       code: 500,
       message: error instanceof Error ? error.message : "未知错误",
-      data: null as unknown as Session,
+      data: null as unknown as Session, // 修复类型错误
       timestamp: Date.now(),
     }
   }
@@ -65,14 +60,8 @@ export async function createSession(params: CreateSessionParams): Promise<ApiRes
 // 获取会话列表
 export async function getSessions(params: GetSessionsParams): Promise<ApiResponse<Session[]>> {
   try {
-    const queryParams: Record<string, any> = {}
-    
-    // 只保留archived参数
-    if (params.archived !== undefined) {
-      queryParams.archived = params.archived
-    }
-    
-    const url = buildApiUrl(API_ENDPOINTS.SESSIONS, queryParams)
+    const queryString = buildQueryString(params)
+    const url = `http://localhost:8080/api/sessions${queryString}`
 
     console.log(`Fetching sessions with URL: ${url}`)
 
@@ -106,7 +95,7 @@ export async function getSessions(params: GetSessionsParams): Promise<ApiRespons
 // 获取单个会话详情
 export async function getSession(sessionId: string): Promise<ApiResponse<Session>> {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.SESSION_DETAIL(sessionId))
+    const url = `http://localhost:8080/api/sessions/${sessionId}`
 
     console.log(`Fetching session with URL: ${url}`)
 
@@ -140,7 +129,8 @@ export async function getSession(sessionId: string): Promise<ApiResponse<Session
 // 更新会话
 export async function updateSession(sessionId: string, params: UpdateSessionParams): Promise<ApiResponse<Session>> {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.SESSION_DETAIL(sessionId), params)
+    const queryString = buildQueryString(params)
+    const url = `http://localhost:8080/api/sessions/${sessionId}${queryString}`
 
     console.log(`Updating session with URL: ${url}`)
 
@@ -174,7 +164,7 @@ export async function updateSession(sessionId: string, params: UpdateSessionPara
 // 删除会话
 export async function deleteSession(sessionId: string): Promise<ApiResponse<null>> {
   try {
-    const url = buildApiUrl(API_ENDPOINTS.SESSION_DETAIL(sessionId))
+    const url = `http://localhost:8080/api/sessions/${sessionId}`
 
     console.log(`Deleting session with URL: ${url}`)
 
@@ -205,3 +195,36 @@ export async function deleteSession(sessionId: string): Promise<ApiResponse<null
   }
 }
 
+// withToast包装的函数
+export const createSessionWithToast = withToast(createSession, {
+  showSuccessToast: true,
+  showErrorToast: true,
+  successTitle: "创建会话成功",
+  errorTitle: "创建会话失败"
+})
+
+export const getSessionsWithToast = withToast(getSessions, {
+  showSuccessToast: false,
+  showErrorToast: true,
+  errorTitle: "获取会话列表失败"
+})
+
+export const getSessionWithToast = withToast(getSession, {
+  showSuccessToast: false,
+  showErrorToast: true,
+  errorTitle: "获取会话详情失败"
+})
+
+export const updateSessionWithToast = withToast(updateSession, {
+  showSuccessToast: true,
+  showErrorToast: true,
+  successTitle: "更新会话成功",
+  errorTitle: "更新会话失败"
+})
+
+export const deleteSessionWithToast = withToast(deleteSession, {
+  showSuccessToast: true,
+  showErrorToast: true,
+  successTitle: "删除会话成功",
+  errorTitle: "删除会话失败"
+})

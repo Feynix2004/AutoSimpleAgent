@@ -1,4 +1,4 @@
-package org.feynix.domain.common.util;
+package org.feynix.infrastructure.util;
 
 import org.feynix.infrastructure.exception.ParamValidationException;
 
