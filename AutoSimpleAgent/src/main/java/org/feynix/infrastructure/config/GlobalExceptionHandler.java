@@ -1,5 +1,6 @@
 package org.feynix.infrastructure.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.infrastructure.exception.EntityNotFoundException;
 import org.feynix.infrastructure.exception.ParamValidationException;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
