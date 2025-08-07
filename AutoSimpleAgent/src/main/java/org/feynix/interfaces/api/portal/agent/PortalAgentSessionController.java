@@ -8,7 +8,7 @@ import org.feynix.domain.conversation.dto.MessageDTO;
 import org.feynix.domain.conversation.dto.SessionDTO;
 import org.feynix.infrastructure.auth.UserContext;
 import org.feynix.interfaces.api.common.Result;
-import org.feynix.interfaces.dto.agent.conversation.ConversationRequest;
+import org.feynix.interfaces.dto.conversation.ConversationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

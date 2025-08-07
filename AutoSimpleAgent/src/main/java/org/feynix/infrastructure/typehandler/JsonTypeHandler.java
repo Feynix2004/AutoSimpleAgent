@@ -7,7 +7,7 @@ import org.apache.ibatis.type.MappedTypes;
 import org.feynix.domain.agent.model.AgentTool;
 import org.feynix.domain.agent.model.ModelConfig;
 import org.feynix.infrastructure.exception.ParamValidationException;
-import org.feynix.infrastructure.util.JsonUtils;
+import org.feynix.infrastructure.utils.JsonUtils;
 import org.postgresql.util.PGobject;
 
 import java.sql.CallableStatement;

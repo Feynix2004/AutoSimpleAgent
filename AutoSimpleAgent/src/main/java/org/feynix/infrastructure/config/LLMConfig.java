@@ -1,6 +1,5 @@
 package org.feynix.infrastructure.config;
 
-import org.feynix.domain.llm.service.LLMService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

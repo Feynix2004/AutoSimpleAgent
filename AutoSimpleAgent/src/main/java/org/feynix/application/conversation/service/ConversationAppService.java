@@ -1,8 +1,6 @@
 package org.feynix.application.conversation.service;
 
 
-import org.feynix.application.conversation.dto.ChatRequest;
-import org.feynix.application.conversation.dto.ChatResponse;
 import org.feynix.application.conversation.dto.StreamChatRequest;
 import org.feynix.application.conversation.dto.StreamChatResponse;
 import org.feynix.domain.agent.service.AgentDomainService;
@@ -11,17 +9,10 @@ import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.conversation.model.SessionEntity;
 import org.feynix.domain.conversation.service.ConversationDomainService;
 import org.feynix.domain.conversation.service.SessionDomainService;
-import org.feynix.domain.llm.model.LLMRequest;
-import org.feynix.domain.llm.model.LLMResponse;
-import org.feynix.domain.llm.service.LLMService;
 import org.feynix.infrastructure.exception.BusinessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.feynix.infrastructure.integration.LLM.siliconflow.SiliconFlowLLMService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**

@@ -1,0 +1,17 @@
+package org.feynix.domain.llm.model.enums;
+
+import org.feynix.infrastructure.exception.BusinessException;
+
+public enum ProviderProtocol {
+
+    OpenAI;
+
+    public static ProviderProtocol fromCode(String code) {
+        for (ProviderProtocol protocol : values()) {
+            if (protocol.name().equals(code)) {
+                return protocol;
+            }
+        }
+        throw new BusinessException("Unknown model type code: " + code);
+    }
+}

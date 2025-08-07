@@ -1,13 +1,9 @@
 package org.feynix.infrastructure.integration.llm;
 
-import org.feynix.domain.llm.model.LLMRequest;
-import org.feynix.domain.llm.model.LLMResponse;
-import org.feynix.domain.llm.service.LLMService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractLLMService implements LLMService {

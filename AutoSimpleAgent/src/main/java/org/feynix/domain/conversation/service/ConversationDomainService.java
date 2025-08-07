@@ -9,8 +9,6 @@ import org.feynix.domain.conversation.dto.MessageDTO;
 import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.conversation.repository.ContextRepository;
 import org.feynix.domain.conversation.repository.MessageRepository;
-import org.feynix.domain.llm.model.LLMRequest;
-import org.feynix.domain.llm.service.LLMService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

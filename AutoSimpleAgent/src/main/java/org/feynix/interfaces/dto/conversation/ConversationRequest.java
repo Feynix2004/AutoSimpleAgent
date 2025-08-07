@@ -1,4 +1,4 @@
-package org.feynix.interfaces.dto.agent.conversation;
+package org.feynix.interfaces.dto.conversation;
 
 public class ConversationRequest {
     private String message;
