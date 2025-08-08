@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { ChevronDown, ChevronRight, Compass, FolderOpen, Bot, RefreshCw, MoreHorizontal, Trash2 } from "lucide-react"
+import { ChevronDown, ChevronRight, Compass, FolderOpen, Bot, RefreshCw, MoreHorizontal, Trash2, Settings } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -21,12 +21,19 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ModelSelectDialog } from "../components/model-select-dialog"
+import { 
+  getWorkspaceAgentsWithToast, 
+  removeAgentFromWorkspaceWithToast 
+} from "@/lib/api-services"
 
 type SidebarItem = {
   title: string
   href?: string
   icon?: React.ComponentType<{ className?: string }> | string
   children?: SidebarItem[]
+  id?: string
+  avatar?: string | null
 }
 
 type SidebarItemProps = {
@@ -48,6 +55,10 @@ function WorkspaceItem({ id, name, icon, avatar, onClick }: WorkspaceItemProps) 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
+  
+  // 添加模型选择相关状态
+  const [showModelDialog, setShowModelDialog] = useState(false)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
 
   // Handle delete workspace assistant
   const handleDeleteWorkspace = async (e: React.MouseEvent) => {
@@ -83,6 +94,32 @@ function WorkspaceItem({ id, name, icon, avatar, onClick }: WorkspaceItemProps) 
     }
   }
 
+  // 打开模型设置对话框
+  const handleOpenModelSettings = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    // 获取agent详情
+    try {
+      // 这里可以在实际情况下添加获取agent详情的API调用
+      // 简化处理，直接使用当前ID和名称
+      setSelectedAgent({
+        id,
+        name,
+        // 添加其他必要的字段
+        avatar,
+      } as Agent)
+      setShowModelDialog(true)
+    } catch (error) {
+      console.error("获取助理详情失败:", error)
+    }
+  }
+  
+  // 模型设置成功回调
+  const handleModelSetSuccess = () => {
+    // 可以添加刷新agent列表的逻辑
+    window.location.reload()
+  }
+
   return (
     <div className="relative group">
       <Button
@@ -115,6 +152,10 @@ function WorkspaceItem({ id, name, icon, avatar, onClick }: WorkspaceItemProps) 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleOpenModelSettings}>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>设置模型</span>
+            </DropdownMenuItem>
             <DropdownMenuItem className="text-red-600" onClick={handleDeleteWorkspace}>
               <Trash2 className="mr-2 h-4 w-4" />
               <span>从工作区移除</span>
@@ -142,6 +183,18 @@ function WorkspaceItem({ id, name, icon, avatar, onClick }: WorkspaceItemProps) 
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* 模型选择对话框 */}
+      {selectedAgent && (
+        <ModelSelectDialog
+          open={showModelDialog}
+          onOpenChange={setShowModelDialog}
+          agentId={selectedAgent.id}
+          agentName={selectedAgent.name}
+          currentModelId={selectedAgent.modelId}
+          onSuccess={handleModelSetSuccess}
+        />
+      )}
     </div>
   )
 }
@@ -229,33 +282,40 @@ function SidebarItemComponent({ item, depth = 0 }: SidebarItemProps) {
 export function Sidebar() {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [retryCount, setRetryCount] = useState(0)
+  const [modelDialogOpen, setModelDialogOpen] = useState(false)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
 
-  // Fetch user agents
-  useEffect(() => {
-    async function fetchAgents() {
-      try {
-        setLoading(true)
-        setError(null)
-        const response = await getUserAgents()
-
-        if (response.code === 200) {
-          setAgents(response.data)
-        } else {
-          setError(response.message || "获取助理列表失败")
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "未知错误"
-        console.error("获取助理列表错误:", error)
-        setError(`获取助理列表失败: ${errorMessage}`)
-      } finally {
-        setLoading(false)
+  // 加载工作区Agent列表
+  const loadWorkspaceAgents = async () => {
+    setLoading(true)
+    try {
+      const response = await getWorkspaceAgentsWithToast()
+      if (response.code === 200 && Array.isArray(response.data)) {
+        setAgents(response.data)
       }
+    } catch (error) {
+      console.error("加载工作区Agent失败:", error)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchAgents()
-  }, [retryCount])
+  useEffect(() => {
+    loadWorkspaceAgents()
+  }, [])
+
+  // 处理移除Agent
+  const handleRemoveAgent = async (agentId: string) => {
+    try {
+      const response = await removeAgentFromWorkspaceWithToast(agentId)
+      if (response.code === 200) {
+        // 重新加载工作区Agent列表
+        await loadWorkspaceAgents()
+      }
+    } catch (error) {
+      console.error("移除Agent失败:", error)
+    }
+  }
 
   // Create sidebar items with real agent data
   const sidebarItems: SidebarItem[] = [
@@ -295,17 +355,6 @@ export function Sidebar() {
                   <Skeleton className="h-4 w-24" />
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* Show error state with retry button */}
-          {error && (
-            <div className="px-2 py-2 text-sm text-red-500">
-              <p className="mb-2">{error}</p>
-              <Button variant="outline" size="sm" onClick={() => setRetryCount((prev) => prev + 1)} className="w-full">
-                <RefreshCw className="mr-2 h-3 w-3" />
-                重试
-              </Button>
             </div>
           )}
         </div>

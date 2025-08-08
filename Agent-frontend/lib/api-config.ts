@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BASE_URL: "http://localhost:8080/api",
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api",
   CURRENT_USER_ID: "1", // 当前用户ID
 }
 
@@ -14,7 +14,7 @@ export const API_ENDPOINTS = {
   SEND_MESSAGE: (sessionId: string) => `/agent/session/${sessionId}/message`,
 
   // 助理相关
-  USER_AGENTS: () => `/agent/user`,
+  USER_AGENTS: (userId: string) => `/agent/user/${userId}`,
   AGENT_DETAIL: (id: string) => `/agent/${id}`,
   CREATE_AGENT: "/agent",
   UPDATE_AGENT: (id: string) => `/agent/${id}`,
@@ -24,6 +24,26 @@ export const API_ENDPOINTS = {
   AGENT_VERSION_DETAIL: (id: string, version: string) => `/agent/${id}/versions/${version}`,
   PUBLISH_AGENT_VERSION: (id: string) => `/agent/${id}/publish`,
   PUBLISHED_AGENTS: "/agent/published",
+  SET_AGENT_MODEL: (agentId: string, modelId: string) => `/agent/workspace/${agentId}/model/${modelId}`,
+  
+  // LLM相关
+  PROVIDERS: "/llm/providers",
+  PROVIDER_DETAIL: (id: string) => `/llm/providers/${id}`,
+  CREATE_PROVIDER: "/llm/providers",
+  UPDATE_PROVIDER: "/llm/providers",
+  DELETE_PROVIDER: (id: string) => `/llm/providers/${id}`,
+  PROVIDER_PROTOCOLS: "/llm/providers/protocols",
+  TOGGLE_PROVIDER_STATUS: (id: string) => `/llm/providers/${id}/status`,
+  
+  // 模型相关
+  // 注意：'/llm/models' 路径不可用
+  // MODELS: "/llm/models",
+  MODEL_DETAIL: (id: string) => `/llm/models/${id}`,
+  CREATE_MODEL: "/llm/models",
+  UPDATE_MODEL: "/llm/models",
+  DELETE_MODEL: (id: string) => `/llm/models/${id}`,
+  TOGGLE_MODEL_STATUS: (id: string) => `/llm/models/${id}/status`,
+  MODEL_TYPES: "/llm/models/types",
 }
 
 // 构建完整的API URL
