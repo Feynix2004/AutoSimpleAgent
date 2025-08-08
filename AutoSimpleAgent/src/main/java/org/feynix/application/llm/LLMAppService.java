@@ -8,7 +8,7 @@ import org.feynix.domain.llm.model.ModelEntity;
 import org.feynix.domain.llm.model.ProviderAggregate;
 import org.feynix.domain.llm.model.ProviderEntity;
 import org.feynix.domain.llm.model.enums.ModelType;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 import org.feynix.domain.llm.model.enums.ProviderType;
 import org.feynix.domain.llm.service.LLMDomainService;
 import org.feynix.infrastructure.entity.Operator;

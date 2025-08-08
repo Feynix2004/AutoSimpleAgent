@@ -1,12 +1,12 @@
 package org.feynix.application.agent.service;
 
 
-import org.feynix.domain.agent.model.AgentDTO;
+import org.feynix.application.agent.dto.AgentDTO;
 import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
 import org.feynix.domain.conversation.service.ConversationDomainService;
 import org.feynix.domain.conversation.service.SessionDomainService;
-import org.feynix.domain.conversation.dto.SessionDTO;
+import org.feynix.application.conversation.dto.SessionDTO;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.springframework.stereotype.Service;

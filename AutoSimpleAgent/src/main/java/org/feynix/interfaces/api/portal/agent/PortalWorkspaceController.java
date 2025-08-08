@@ -2,7 +2,7 @@ package org.feynix.interfaces.api.portal.agent;
 
 
 import org.feynix.application.agent.service.AgentWorkspaceAppService;
-import org.feynix.domain.agent.model.AgentDTO;
+import org.feynix.application.agent.dto.AgentDTO;
 import org.feynix.infrastructure.auth.UserContext;
 import org.feynix.interfaces.api.common.Result;
 import org.springframework.web.bind.annotation.*;

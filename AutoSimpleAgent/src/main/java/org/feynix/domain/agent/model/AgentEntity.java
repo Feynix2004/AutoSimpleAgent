@@ -4,6 +4,8 @@ package org.feynix.domain.agent.model;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.apache.ibatis.type.JdbcType;
+import org.feynix.application.agent.dto.AgentDTO;
+import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.infrastructure.typehandler.JsonTypeHandler;
 
 import java.time.LocalDateTime;
@@ -55,7 +57,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 模型配置，包含模型类型、温度等参数
      */
     @TableField(value = "model_config", typeHandler = JsonTypeHandler.class, jdbcType = JdbcType.OTHER)
-    private ModelConfig modelConfig;
+    private AgentModelConfig agentModelConfig;
 
     /**
      * Agent可使用的工具列表
@@ -116,7 +118,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 无参构造函数
      */
     public AgentEntity() {
-        this.modelConfig = ModelConfig.createDefault();
+        this.agentModelConfig = AgentModelConfig.createDefault();
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -125,7 +127,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 全参构造函数
      */
     public AgentEntity(String id, String name, String avatar, String description, String systemPrompt,
-                       String welcomeMessage, ModelConfig modelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                       String welcomeMessage, AgentModelConfig agentModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
                        String publishedVersion, Boolean enabled, Integer agentType, String userId,
                        LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.id = id;
@@ -134,7 +136,7 @@ public class AgentEntity extends Model<AgentEntity> {
         this.description = description;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.modelConfig = modelConfig;
+        this.agentModelConfig = agentModelConfig;
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.publishedVersion = publishedVersion;
@@ -195,12 +197,12 @@ public class AgentEntity extends Model<AgentEntity> {
         this.welcomeMessage = welcomeMessage;
     }
 
-    public ModelConfig getModelConfig() {
-        return modelConfig != null ? modelConfig : ModelConfig.createDefault();
+    public AgentModelConfig getModelConfig() {
+        return agentModelConfig != null ? agentModelConfig : AgentModelConfig.createDefault();
     }
 
-    public void setModelConfig(ModelConfig modelConfig) {
-        this.modelConfig = modelConfig;
+    public void setModelConfig(AgentModelConfig agentModelConfig) {
+        this.agentModelConfig = agentModelConfig;
     }
 
     public List<AgentTool> getTools() {
@@ -304,11 +306,11 @@ public class AgentEntity extends Model<AgentEntity> {
     /**
      * 更新Agent配置
      */
-    public void updateConfig(String systemPrompt, String welcomeMessage, ModelConfig modelConfig,
+    public void updateConfig(String systemPrompt, String welcomeMessage, AgentModelConfig agentModelConfig,
                              List<AgentTool> tools, List<String> knowledgeBaseIds) {
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.modelConfig = modelConfig;
+        this.agentModelConfig = agentModelConfig;
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.updatedAt = LocalDateTime.now();
@@ -356,7 +358,7 @@ public class AgentEntity extends Model<AgentEntity> {
         dto.setDescription(this.description);
         dto.setSystemPrompt(this.systemPrompt);
         dto.setWelcomeMessage(this.welcomeMessage);
-        dto.setModelConfig(this.modelConfig);
+        dto.setModelConfig(this.agentModelConfig);
         dto.setTools(this.tools);
         dto.setKnowledgeBaseIds(this.knowledgeBaseIds);
         dto.setPublishedVersion(this.publishedVersion);

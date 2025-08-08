@@ -1,10 +1,9 @@
 package org.feynix.domain.conversation.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import org.feynix.domain.conversation.constant.Role;
+import org.feynix.infrastructure.converter.RoleConverter;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,6 @@ import java.time.LocalDateTime;
  */
 @TableName("messages")
 public class MessageEntity extends Model<MessageEntity> {
-
     /**
      * 消息唯一ID
      */
@@ -29,8 +27,8 @@ public class MessageEntity extends Model<MessageEntity> {
     /**
      * 消息角色 (user, assistant, system)
      */
-    @TableField("role")
-    private String role;
+    @TableField(value = "role",typeHandler = RoleConverter.class)
+    private Role role;
 
     /**
      * 消息内容
@@ -41,14 +39,14 @@ public class MessageEntity extends Model<MessageEntity> {
     /**
      * 创建时间
      */
-    @TableField("created_at")
+    @TableField(value = "created_at",fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 
     /**
      * Token数量
      */
     @TableField("token_count")
-    private Integer tokenCount;
+    private Integer tokenCount = 0;
 
     /**
      * 服务提供商
@@ -74,48 +72,6 @@ public class MessageEntity extends Model<MessageEntity> {
     public MessageEntity() {
     }
 
-    /**
-     * 全参构造函数
-     */
-    public MessageEntity(String id, String sessionId, String role, String content,
-                         LocalDateTime createdAt, Integer tokenCount, String provider,
-                         String model, String metadata) {
-        this.id = id;
-        this.sessionId = sessionId;
-        this.role = role;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.tokenCount = tokenCount;
-        this.provider = provider;
-        this.model = model;
-        this.metadata = metadata;
-    }
-
-
-    /**
-     * 创建助手消息
-     */
-    public static MessageEntity createAssistantMessage(String sessionId, String content, String provider, String model, int tokenCount) {
-        MessageEntity message = new MessageEntity();
-        message.setSessionId(sessionId);
-        message.setRole("assistant");
-        message.setContent(content);
-        message.setCreatedAt(LocalDateTime.now());
-        message.setProvider(provider);
-        message.setModel(model);
-        message.setTokenCount(tokenCount);
-        return message;
-    }
-
-    public static MessageEntity createUserMessage(String sessionId, String content) {
-        MessageEntity message = new MessageEntity();
-        message.setSessionId(sessionId);
-        message.setRole("user");
-        message.setContent(content);
-        message.setCreatedAt(LocalDateTime.now());
-        return message;
-    }
-
     // Getter和Setter方法
     public String getId() {
         return id;
@@ -133,11 +89,11 @@ public class MessageEntity extends Model<MessageEntity> {
         this.sessionId = sessionId;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

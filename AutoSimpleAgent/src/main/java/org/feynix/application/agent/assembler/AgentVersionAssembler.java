@@ -1,6 +1,6 @@
 package org.feynix.application.agent.assembler;
 
-import org.feynix.domain.agent.model.AgentVersionDTO;
+import org.feynix.application.agent.dto.AgentVersionDTO;
 import org.feynix.domain.agent.model.AgentVersionEntity;
 
 import java.util.ArrayList;

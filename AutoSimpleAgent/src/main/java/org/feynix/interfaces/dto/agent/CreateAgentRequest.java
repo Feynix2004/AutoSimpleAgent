@@ -1,8 +1,8 @@
 package org.feynix.interfaces.dto.agent;
 
 import org.feynix.domain.agent.model.AgentTool;
-import org.feynix.domain.agent.model.AgentType;
-import org.feynix.domain.agent.model.ModelConfig;
+import org.feynix.domain.agent.constant.AgentType;
+import org.feynix.domain.agent.model.AgentModelConfig;
 import org.feynix.infrastructure.utils.ValidationUtils;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class CreateAgentRequest {
     private AgentType agentType = AgentType.CHAT_ASSISTANT;
     private String systemPrompt;
     private String welcomeMessage;
-    private ModelConfig modelConfig;
+    private AgentModelConfig agentModelConfig;
     private List<AgentTool> tools;
     private List<String> knowledgeBaseIds;
 
@@ -27,7 +27,7 @@ public class CreateAgentRequest {
     }
 
     public CreateAgentRequest(String name, String description, String avatar, AgentType agentType,
-                              String systemPrompt, String welcomeMessage, ModelConfig modelConfig,
+                              String systemPrompt, String welcomeMessage, AgentModelConfig agentModelConfig,
                               List<AgentTool> tools, List<String> knowledgeBaseIds, String userId) {
         this.name = name;
         this.description = description;
@@ -35,18 +35,18 @@ public class CreateAgentRequest {
         this.agentType = agentType;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.modelConfig = modelConfig;
+        this.agentModelConfig = agentModelConfig;
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
     }
 
     // 兼容旧构造方法
     public CreateAgentRequest(String name, String description, String avatar, Integer agentTypeCode,
-                              String systemPrompt, String welcomeMessage, ModelConfig modelConfig,
+                              String systemPrompt, String welcomeMessage, AgentModelConfig agentModelConfig,
                               List<AgentTool> tools, List<String> knowledgeBaseIds, String userId) {
         this(name, description, avatar,
                 agentTypeCode != null ? AgentType.fromCode(agentTypeCode) : AgentType.CHAT_ASSISTANT,
-                systemPrompt, welcomeMessage, modelConfig, tools, knowledgeBaseIds, userId);
+                systemPrompt, welcomeMessage, agentModelConfig, tools, knowledgeBaseIds, userId);
     }
 
     /**
@@ -120,12 +120,12 @@ public class CreateAgentRequest {
         this.welcomeMessage = welcomeMessage;
     }
 
-    public ModelConfig getModelConfig() {
-        return modelConfig;
+    public AgentModelConfig getModelConfig() {
+        return agentModelConfig;
     }
 
-    public void setModelConfig(ModelConfig modelConfig) {
-        this.modelConfig = modelConfig;
+    public void setModelConfig(AgentModelConfig agentModelConfig) {
+        this.agentModelConfig = agentModelConfig;
     }
 
     public List<AgentTool> getTools() {

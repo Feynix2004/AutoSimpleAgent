@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.feynix.domain.llm.model.config.ProviderConfig;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 import org.feynix.infrastructure.converter.ProviderConfigConverter;
 import org.feynix.infrastructure.converter.ProviderProtocolConverter;
 import org.feynix.infrastructure.entity.BaseEntity;

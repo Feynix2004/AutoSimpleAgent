@@ -1,4 +1,4 @@
-package org.feynix.domain.conversation.dto;
+package org.feynix.application.conversation.dto;
 
 import org.feynix.domain.conversation.model.MessageEntity;
 

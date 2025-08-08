@@ -1,15 +1,12 @@
 package org.feynix.domain.conversation.service;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.feynix.application.conversation.assembler.SessionAssembler;
-import org.feynix.domain.conversation.dto.SessionDTO;
 import org.feynix.domain.conversation.model.SessionEntity;
 import org.feynix.domain.conversation.repository.SessionRepository;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SessionDomainService {
@@ -24,13 +21,12 @@ public class SessionDomainService {
      * 根据 agentId 获取会话列表
      *
      * @param agentId 助理id
-     * @return
      */
-    public List<SessionDTO> getSessionsByAgentId(String agentId) {
-        List<SessionEntity> sessions = sessionRepository.selectList(Wrappers.<SessionEntity>lambdaQuery()
+    public List<SessionEntity> getSessionsByAgentId(String agentId) {
+        return sessionRepository.selectList(Wrappers.<SessionEntity>lambdaQuery()
                 .eq(SessionEntity::getAgentId, agentId).orderByDesc(SessionEntity::getCreatedAt));
-        return sessions.stream().map(SessionAssembler::toDTO).collect(Collectors.toList());
     }
+
 
     public void deleteSessions(List<String> sessionIds) {
         sessionRepository.delete(Wrappers.<SessionEntity>lambdaQuery()
@@ -49,15 +45,14 @@ public class SessionDomainService {
      *
      * @param agentId 助理id
      * @param userId  用户id
-     * @return
      */
-    public SessionDTO createSession(String agentId, String userId) {
+    public SessionEntity createSession(String agentId, String userId) {
         SessionEntity session = new SessionEntity();
         session.setAgentId(agentId);
         session.setUserId(userId);
         session.setTitle("新会话");
         sessionRepository.insert(session);
-        return SessionAssembler.toDTO(session);
+        return session;
     }
 
     /**
@@ -100,5 +95,14 @@ public class SessionDomainService {
         if (session == null) {
             throw new BusinessException("会话不存在");
         }
+    }
+
+    public SessionEntity getSession(String sessionId, String userId) {
+        SessionEntity session = sessionRepository.selectOne(Wrappers.<SessionEntity>lambdaQuery()
+                .eq(SessionEntity::getId, sessionId).eq(SessionEntity::getUserId, userId));
+        if (session == null) {
+            throw new BusinessException("会话不存在");
+        }
+        return session;
     }
 }

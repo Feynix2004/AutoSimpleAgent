@@ -1,4 +1,4 @@
-package org.feynix.domain.llm.model.enums;
+package org.feynix.infrastructure.llm.protocol.enums;
 
 import org.feynix.infrastructure.exception.BusinessException;
 

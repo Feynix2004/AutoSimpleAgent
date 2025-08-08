@@ -1,7 +1,7 @@
 package org.feynix.application.llm.dto;
 
 import org.feynix.domain.llm.model.config.ProviderConfig;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

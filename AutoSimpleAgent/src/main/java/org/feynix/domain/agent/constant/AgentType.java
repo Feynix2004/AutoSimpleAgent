@@ -1,4 +1,4 @@
-package org.feynix.domain.agent.model;
+package org.feynix.domain.agent.constant;
 
 
 /**

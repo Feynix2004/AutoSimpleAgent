@@ -1,16 +1,19 @@
 package org.feynix.application.agent.service;
 
-import org.feynix.domain.agent.model.AgentDTO;
+import org.feynix.application.conversation.assembler.SessionAssembler;
+import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
-import org.feynix.domain.conversation.dto.SessionDTO;
+import org.feynix.domain.conversation.constant.Role;
+import org.feynix.application.conversation.dto.SessionDTO;
+import org.feynix.domain.conversation.model.MessageEntity;
+import org.feynix.domain.conversation.model.SessionEntity;
 import org.feynix.domain.conversation.service.ConversationDomainService;
 import org.feynix.domain.conversation.service.SessionDomainService;
 import org.feynix.infrastructure.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -52,14 +55,14 @@ public class AgentSessionAppService {
         }
 
         // 获取对应的会话列表
-        List<SessionDTO> sessions = sessionDomainService.getSessionsByAgentId(agentId);
+        List<SessionEntity> sessions = sessionDomainService.getSessionsByAgentId(agentId);
         if (sessions.isEmpty()) {
             // 如果会话列表为空，则新创建一个并且返回
-            SessionDTO session = sessionDomainService.createSession(agentId, userId);
-            return Collections.singletonList(session);
+            SessionEntity session = sessionDomainService.createSession(agentId, userId);
+            sessions.add(session);
         }
 
-        return sessions;
+        return SessionAssembler.toDTOs(sessions);
     }
 
     /**
@@ -70,11 +73,15 @@ public class AgentSessionAppService {
      * @return 会话
      */
     public SessionDTO createSession(String userId, String agentId) {
-        SessionDTO session = sessionDomainService.createSession(agentId, userId);
-        AgentDTO agentDTO = agentDomainService.getAgentWithPermissionCheck(agentId, userId);
-        String welcomeMessage = agentDTO.getWelcomeMessage();
-        conversationDomainService.saveAssistantMessage(session.getId(),welcomeMessage,"","",0);
-        return session;
+        SessionEntity session = sessionDomainService.createSession(agentId, userId);
+        AgentEntity agent = agentDomainService.getAgentWithPermissionCheck(agentId, userId);
+        String welcomeMessage = agent.getWelcomeMessage();
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.setRole(Role.SYSTEM);
+        messageEntity.setContent(welcomeMessage);
+        messageEntity.setSessionId(session.getId());
+        conversationDomainService.saveMessage(messageEntity);
+        return SessionAssembler.toDTO(session);
     }
 
     /**

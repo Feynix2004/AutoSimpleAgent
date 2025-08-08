@@ -4,7 +4,7 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;

@@ -4,7 +4,7 @@ import org.feynix.application.llm.LLMAppService;
 import org.feynix.application.llm.dto.ModelDTO;
 import org.feynix.application.llm.dto.ProviderDTO;
 import org.feynix.domain.llm.model.enums.ModelType;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 import org.feynix.domain.llm.model.enums.ProviderType;
 import org.feynix.infrastructure.auth.UserContext;
 import org.feynix.interfaces.api.common.Result;

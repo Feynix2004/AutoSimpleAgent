@@ -3,7 +3,7 @@ package org.feynix.interfaces.dto.llm;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.feynix.domain.llm.model.config.ProviderConfig;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 
 /**
  * 服务提供商更新请求

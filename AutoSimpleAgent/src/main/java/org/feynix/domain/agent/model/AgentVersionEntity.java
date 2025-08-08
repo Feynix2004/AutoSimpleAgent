@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.apache.ibatis.type.JdbcType;
+import org.feynix.application.agent.dto.AgentVersionDTO;
+import org.feynix.domain.agent.constant.PublishStatus;
 import org.feynix.infrastructure.typehandler.JsonTypeHandler;
 
 import java.time.LocalDateTime;
@@ -70,7 +72,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
      * 模型配置，包含模型类型、温度等参数
      */
     @TableField(value = "model_config", typeHandler = JsonTypeHandler.class, jdbcType = JdbcType.OTHER)
-    private ModelConfig modelConfig;
+    private AgentModelConfig agentModelConfig;
 
     /**
      * Agent可使用的工具列表
@@ -148,7 +150,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
      * 无参构造函数
      */
     public AgentVersionEntity() {
-        this.modelConfig = ModelConfig.createDefault();
+        this.agentModelConfig = AgentModelConfig.createDefault();
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -158,7 +160,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
      */
     public AgentVersionEntity(String id, String agentId, String name, String avatar, String description,
                               String versionNumber, String systemPrompt, String welcomeMessage,
-                              ModelConfig modelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                              AgentModelConfig agentModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
                               String changeLog, Integer agentType, String userId,
                               LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt,
                               Integer publishStatus, String rejectReason, LocalDateTime reviewTime,
@@ -171,7 +173,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         this.versionNumber = versionNumber;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.modelConfig = modelConfig;
+        this.agentModelConfig = agentModelConfig;
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.changeLog = changeLog;
@@ -227,12 +229,12 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         this.welcomeMessage = welcomeMessage;
     }
 
-    public ModelConfig getModelConfig() {
-        return modelConfig != null ? modelConfig : ModelConfig.createDefault();
+    public AgentModelConfig getModelConfig() {
+        return agentModelConfig != null ? agentModelConfig : AgentModelConfig.createDefault();
     }
 
-    public void setModelConfig(ModelConfig modelConfig) {
-        this.modelConfig = modelConfig;
+    public void setModelConfig(AgentModelConfig agentModelConfig) {
+        this.agentModelConfig = agentModelConfig;
     }
 
     public List<AgentTool> getTools() {
@@ -423,7 +425,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         dto.setVersionNumber(this.versionNumber);
         dto.setSystemPrompt(this.systemPrompt);
         dto.setWelcomeMessage(this.welcomeMessage);
-        dto.setModelConfig(this.modelConfig);
+        dto.setModelConfig(this.agentModelConfig);
         dto.setTools(this.tools);
         dto.setKnowledgeBaseIds(this.knowledgeBaseIds);
         dto.setChangeLog(this.changeLog);

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.feynix.domain.llm.model.ModelEntity;
 import org.feynix.domain.llm.model.ProviderAggregate;
 import org.feynix.domain.llm.model.ProviderEntity;
-import org.feynix.domain.llm.model.enums.ProviderProtocol;
+import org.feynix.infrastructure.llm.protocol.enums.ProviderProtocol;
 import org.feynix.domain.llm.model.enums.ProviderType;
 import org.feynix.domain.llm.repository.ModelRepository;
 import org.feynix.domain.llm.repository.ProviderRepository;
@@ -268,5 +268,17 @@ public class LLMDomainService {
                 .setSql("status = NOT status");
 
         modelRepository.checkedUpdate(updateWrapper);
+    }
+
+    /**
+     * 获取模型
+     * @param modelId 模型id
+     */
+    public ModelEntity getModelById(String modelId) {
+        ModelEntity modelEntity = modelRepository.selectById(modelId);
+        if (modelEntity == null){
+            throw new BusinessException("模型不存在");
+        }
+        return modelEntity;
     }
 }

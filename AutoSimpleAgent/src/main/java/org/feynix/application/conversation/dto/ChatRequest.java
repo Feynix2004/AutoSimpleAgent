@@ -6,25 +6,16 @@ import jakarta.validation.constraints.NotBlank;
 
 public class ChatRequest {
     /**
-     * 用户输入的消息内容
+     * 消息内容
      */
-    @NotBlank(message = "消息内容不能为空")
+    @NotBlank(message = "消息内容不可为空")
     private String message;
 
     /**
-     * 会话ID，可选
+     * 会话ID
      */
+    @NotBlank(message = "会话id不可为空")
     private String sessionId;
-
-    /**
-     * 使用的服务商，可选
-     */
-    private String provider;
-
-    /**
-     * 使用的模型，可选
-     */
-    private String model;
 
     public String getMessage() {
         return message;
@@ -40,21 +31,5 @@ public class ChatRequest {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
     }
 }

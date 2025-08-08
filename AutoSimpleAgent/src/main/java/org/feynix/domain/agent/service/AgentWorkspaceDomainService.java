@@ -1,14 +1,16 @@
 package org.feynix.domain.agent.service;
 
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.feynix.application.agent.assembler.AgentAssembler;
-import org.feynix.domain.agent.model.AgentDTO;
+import org.feynix.application.agent.dto.AgentDTO;
 import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentWorkspaceEntity;
 import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentWorkspaceRepository;
+import org.feynix.infrastructure.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -51,5 +53,16 @@ public class AgentWorkspaceDomainService {
 
     public boolean checkAgentWorkspaceExist(String agentId, String userId) {
         return agentWorkspaceRepository.checkAgentWorkspaceExist(agentId,userId);
+    }
+
+    public AgentWorkspaceEntity getWorkspace(String agentId, String userId) {
+        Wrapper<AgentWorkspaceEntity> wrapper = Wrappers.<AgentWorkspaceEntity>lambdaQuery()
+                .eq(AgentWorkspaceEntity::getAgentId, agentId)
+                .eq(AgentWorkspaceEntity::getUserId, userId);
+        AgentWorkspaceEntity agentWorkspaceEntity = agentWorkspaceRepository.selectOne(wrapper);
+        if (agentWorkspaceEntity ==null){
+            throw new BusinessException("助理不存在");
+        }
+        return agentWorkspaceEntity;
     }
 }

@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.feynix.application.agent.assembler.AgentAssembler;
 import org.feynix.application.agent.assembler.AgentVersionAssembler;
+import org.feynix.application.agent.dto.AgentDTO;
+import org.feynix.application.agent.dto.AgentVersionDTO;
+import org.feynix.domain.agent.constant.PublishStatus;
 import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.repository.AgentRepository;
 import org.feynix.domain.agent.repository.AgentVersionRepository;
@@ -427,7 +430,7 @@ public class AgentDomainService{
 
     }
 
-    public AgentDTO getAgentWithPermissionCheck(String agentId, String userId) {
+    public AgentEntity getAgentWithPermissionCheck(String agentId, String userId) {
         // 检查工作区是否存在
         boolean b1 = agentWorkspaceRepository.checkAgentWorkspaceExist(agentId, userId);
 
@@ -435,16 +438,16 @@ public class AgentDomainService{
         if (!b1 && !b2){
             throw new BusinessException("助理不存在");
         }
-        AgentDTO agentDTO = getAgentById(agentId);
+        AgentEntity agentEntity = getAgentById(agentId);
 
         // 如果有版本则使用版本
-        String publishedVersion = agentDTO.getPublishedVersion();
+        String publishedVersion = agentEntity.getPublishedVersion();
         if (!StringUtils.isEmpty(publishedVersion)) {
             AgentVersionDTO agentVersion =  getAgentVersionById(publishedVersion);
-            BeanUtils.copyProperties(agentVersion,agentDTO);
+            BeanUtils.copyProperties(agentVersion,agentEntity);
         }
 
-        return agentDTO;
+        return agentEntity;
     }
 
     public AgentVersionDTO getAgentVersionById(String versionId){
@@ -452,7 +455,7 @@ public class AgentDomainService{
         return AgentVersionAssembler.toDTO(agentVersion);
     }
 
-    public AgentDTO getAgentById(String agentId) {
+    public AgentEntity getAgentById(String agentId) {
         return this.getAgentsByIds(Collections.singletonList(agentId)).get(0);
     }
 
@@ -461,9 +464,8 @@ public class AgentDomainService{
      * /**
      * 根据 agentIds 获取 agents
      */
-    public List<AgentDTO> getAgentsByIds(List<String> agentIds) {
-        List<AgentEntity> agents = agentRepository.selectBatchIds(agentIds);
-        return agents.stream().map(AgentAssembler::toDTO).collect(Collectors.toList());
+    public List<AgentEntity> getAgentsByIds(List<String> agentIds) {
+        return agentRepository.selectByIds(agentIds);
     }
 
 }

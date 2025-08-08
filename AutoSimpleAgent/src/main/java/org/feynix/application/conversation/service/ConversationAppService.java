@@ -1,19 +1,34 @@
 package org.feynix.application.conversation.service;
 
 
-import org.feynix.application.conversation.dto.StreamChatRequest;
+import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
+import dev.langchain4j.model.output.TokenUsage;
+import org.feynix.application.conversation.dto.ChatRequest;
 import org.feynix.application.conversation.dto.StreamChatResponse;
+import org.feynix.domain.agent.model.AgentEntity;
+import org.feynix.domain.agent.model.AgentWorkspaceEntity;
 import org.feynix.domain.agent.service.AgentDomainService;
-import org.feynix.domain.conversation.dto.MessageDTO;
+import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
+import org.feynix.domain.conversation.constant.Role;
+import org.feynix.application.conversation.dto.MessageDTO;
 import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.conversation.model.SessionEntity;
 import org.feynix.domain.conversation.service.ConversationDomainService;
 import org.feynix.domain.conversation.service.SessionDomainService;
+import org.feynix.domain.llm.model.ModelEntity;
+import org.feynix.domain.llm.model.ProviderEntity;
+import org.feynix.domain.llm.service.LLMDomainService;
 import org.feynix.infrastructure.exception.BusinessException;
+import org.feynix.infrastructure.llm.LLMProviderService;
+import org.feynix.infrastructure.llm.config.ProviderConfig;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * 对话服务
@@ -25,15 +40,26 @@ public class ConversationAppService {
 
     private final SessionDomainService sessionDomainService;
 
+    private final AgentDomainService agentDomainService;
+    private final AgentWorkspaceDomainService agentWorkspaceDomainService;
 
+    private final LLMProviderService llmProviderService;
+
+    private final LLMDomainService llmDomainService;
     public ConversationAppService(
             ConversationDomainService conversationDomainService,
             SessionDomainService sessionDomainService,
-            AgentDomainService agentDomainService
+            AgentDomainService agentDomainService,
+            AgentWorkspaceDomainService agentWorkspaceDomainService,
+            LLMDomainService llmDomainService,
+            LLMProviderService llmProviderService
     ) {
         this.conversationDomainService = conversationDomainService;
         this.sessionDomainService = sessionDomainService;
-
+        this.agentDomainService = agentDomainService;
+        this.agentWorkspaceDomainService = agentWorkspaceDomainService;
+        this.llmDomainService = llmDomainService;
+        this.llmProviderService = llmProviderService;
     }
 
     /**
@@ -54,28 +80,102 @@ public class ConversationAppService {
         return conversationDomainService.getConversationMessages(sessionId);
     }
 
-    /**
-     * 发送消息 - 保存用户消息并创建或更新上下文
-     *
-     * @param sessionId 会话id
-     * @param userId    用户id
-     * @param message   消息内容
-     * @param modelName 模型名称
-     * @return 保存的用户消息实体
-     */
-    public MessageEntity sendMessage(String sessionId, String userId, String message, String modelName) {
-        return conversationDomainService.sendMessage(sessionId, userId, message, modelName);
-    }
 
-    /**
-     * 处理流式聊天请求
-     */
-    public void chatStream(StreamChatRequest request, BiConsumer<StreamChatResponse, Boolean> responseHandler) {
-        conversationDomainService.chatStream(request, responseHandler);
-    }
 
-    public MessageEntity saveAssistantMessage(String sessionId, String content,
-                                              String provider, String model, Integer tokenCount) {
-        return conversationDomainService.saveAssistantMessage(sessionId, content, provider, model, tokenCount);
+    public SseEmitter chat(ChatRequest chatRequest, String userId) {
+        // 获取会话
+        String sessionId = chatRequest.getSessionId();
+        SessionEntity session = sessionDomainService.getSession(sessionId, userId);
+        String agentId = session.getAgentId();
+
+        // 获取对应agent是否可以使用：如果 userId 不同并且是禁用，则不可对话
+        AgentEntity agent = agentDomainService.getAgentById(agentId);
+        if (!agent.getUserId().equals(userId) && !agent.getEnabled()){
+            throw new BusinessException("agent已被禁用");
+        }
+        // 从工作区中获取对应的模型信息
+        AgentWorkspaceEntity workspace = agentWorkspaceDomainService.getWorkspace(agentId, userId);
+        String modelId = workspace.getModelId();
+        ModelEntity model = llmDomainService.getModelById(modelId);
+
+        model.isActive();
+
+        // 获取服务商信息
+        ProviderEntity provider = llmDomainService.getProvider(model.getProviderId(), userId);
+        provider.isActive();
+
+        // 对话 todo  这里需要传入消息列表 ，并且目前默认流式
+        org.feynix.domain.llm.model.config.ProviderConfig config = provider.getConfig();
+        StreamingChatLanguageModel chatStreamClient = llmProviderService.getStream(provider.getProtocol(), new ProviderConfig(config.getApiKey(),config.getBaseUrl(),model.getModelId()));
+
+        // 用户消息
+        MessageEntity userMessageEntity = new MessageEntity();
+        userMessageEntity.setRole(Role.USER);
+        userMessageEntity.setContent(chatRequest.getMessage());
+        userMessageEntity.setSessionId(sessionId);
+
+        // 大模型消息
+        MessageEntity llmMessageEntity = new MessageEntity();
+        llmMessageEntity.setRole(Role.ASSISTANT);
+        llmMessageEntity.setSessionId(sessionId);
+        llmMessageEntity.setModel(model.getModelId());
+        llmMessageEntity.setProvider(provider.getId());
+
+        SseEmitter emitter = new SseEmitter();
+
+        chatStreamClient.chat(chatRequest.getMessage(), new StreamingChatResponseHandler() {
+            @Override
+            public void onPartialResponse(String partialResponse) {
+                try {
+                    StreamChatResponse response = new StreamChatResponse();
+                    response.setContent(partialResponse);
+                    response.setDone(false);
+                    response.setProvider(provider.getName());
+                    response.setModel(model.getModelId());
+                    emitter.send(response);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void onCompleteResponse(ChatResponse completeResponse) {
+                // todo xhy 传出去
+                TokenUsage tokenUsage = completeResponse.metadata().tokenUsage();
+
+                Integer inputTokenCount = tokenUsage.inputTokenCount();
+                userMessageEntity.setTokenCount(inputTokenCount);
+                Integer outputTokenCount = tokenUsage.outputTokenCount();
+                llmMessageEntity.setTokenCount(outputTokenCount);
+                llmMessageEntity.setContent(completeResponse.aiMessage().text());
+                try {
+                    StreamChatResponse response = new StreamChatResponse();
+                    response.setContent("");
+                    response.setDone(true);
+                    response.setProvider(provider.getName());
+                    response.setModel(model.getModelId());
+                    emitter.send(response);
+                    emitter.complete();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                conversationDomainService.insertBathMessage(Arrays.asList(userMessageEntity,llmMessageEntity));
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                try {
+                    StreamChatResponse response = new StreamChatResponse();
+                    response.setContent(error.getMessage());
+                    response.setDone(true);
+                    emitter.send(response);
+                    emitter.complete();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        return emitter;
     }
 }

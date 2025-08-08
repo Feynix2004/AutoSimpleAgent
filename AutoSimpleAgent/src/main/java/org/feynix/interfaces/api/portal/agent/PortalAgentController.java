@@ -6,8 +6,8 @@ import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
 import org.springframework.web.bind.annotation.*;
 import org.feynix.application.agent.service.AgentAppService;
-import org.feynix.domain.agent.model.AgentDTO;
-import org.feynix.domain.agent.model.AgentVersionDTO;
+import org.feynix.application.agent.dto.AgentDTO;
+import org.feynix.application.agent.dto.AgentVersionDTO;
 import org.feynix.infrastructure.auth.UserContext;
 import org.feynix.interfaces.api.common.Result;
 
