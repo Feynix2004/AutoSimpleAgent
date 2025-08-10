@@ -6,11 +6,14 @@ import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.domain.agent.model.*;
 import org.feynix.interfaces.dto.agent.CreateAgentRequest;
 import org.feynix.interfaces.dto.agent.PublishAgentVersionRequest;
+import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -56,7 +59,11 @@ public class AgentAssembler {
         return entity;
     }
 
-
+    public static AgentEntity toEntity(SearchAgentsRequest searchAgentsRequest) {
+        AgentEntity agentEntity = new AgentEntity();
+        agentEntity.setName(searchAgentsRequest.getName());
+        return agentEntity;
+    }
 
     /**
      * 将UpdateAgentRequest转换为AgentEntity
@@ -77,12 +84,6 @@ public class AgentAssembler {
     }
 
 
-    /**
-     * 创建AgentVersionEntity
-     */
-    public static AgentVersionEntity createVersionEntity(AgentEntity agent, PublishAgentVersionRequest request) {
-        return AgentVersionEntity.createFromAgent(agent, request.getVersionNumber(), request.getChangeLog());
-    }
 
     /**
      * 将AgentEntity转换为AgentDTO
@@ -166,5 +167,12 @@ public class AgentAssembler {
         }
 
         return dtoList;
+    }
+
+    public static List<AgentDTO> toDTOs(List<AgentEntity> agents) {
+        if (agents == null || agents.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return agents.stream().map(AgentAssembler::toDTO).collect(Collectors.toList());
     }
 }

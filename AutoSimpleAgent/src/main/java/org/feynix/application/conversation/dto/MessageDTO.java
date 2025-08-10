@@ -1,12 +1,13 @@
 package org.feynix.application.conversation.dto;
 
+import org.feynix.domain.conversation.constant.Role;
 import org.feynix.domain.conversation.model.MessageEntity;
 
 import java.time.LocalDateTime;
 
 public class MessageDTO {
     private String id;
-    private String role;
+    private Role role;
     private String content;
     private LocalDateTime createdAt;
     private String provider;
@@ -21,7 +22,7 @@ public class MessageDTO {
     /**
      * 全参构造函数
      */
-    public MessageDTO(String id, String role, String content, LocalDateTime createdAt,
+    public MessageDTO(String id, Role role, String content, LocalDateTime createdAt,
                       String provider, String model) {
         this.id = id;
         this.role = role;
@@ -40,11 +41,11 @@ public class MessageDTO {
         this.id = id;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

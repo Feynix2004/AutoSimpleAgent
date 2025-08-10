@@ -5,6 +5,7 @@ import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.output.TokenUsage;
+import org.feynix.application.conversation.assembler.MessageAssembler;
 import org.feynix.application.conversation.dto.ChatRequest;
 import org.feynix.application.conversation.dto.StreamChatResponse;
 import org.feynix.domain.agent.model.AgentEntity;
@@ -77,7 +78,8 @@ public class ConversationAppService {
             throw new BusinessException("会话不存在");
         }
 
-        return conversationDomainService.getConversationMessages(sessionId);
+        List<MessageEntity> conversationMessages = conversationDomainService.getConversationMessages(sessionId);
+        return MessageAssembler.toDTOs(conversationMessages);
     }
 
 

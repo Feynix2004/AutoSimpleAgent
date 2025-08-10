@@ -7,7 +7,9 @@ import org.feynix.infrastructure.auth.UserContext;
 import org.feynix.interfaces.api.common.Result;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Agent会话关联接口
@@ -44,5 +46,32 @@ public class PortalWorkspaceController {
         String userId = UserContext.getCurrentUserId();
         agentWorkspaceAppService.deleteAgent(id,userId);
         return Result.success();
+    }
+
+    /**
+     * 设置agent的模型
+     * @param modelId 模型id
+     * @param agentId agentId
+     * @return
+     */
+    @PutMapping("/{agentId}/model/{modelId}")
+    public Result<Void> saveModelId(@PathVariable String modelId,@PathVariable String agentId){
+        String userId = UserContext.getCurrentUserId();
+        agentWorkspaceAppService.saveModel(agentId,userId,modelId);
+        return Result.success();
+    }
+
+    /**
+     * 根据agentId和userId获取对应的modelId
+     * @param agentId agentId
+     * @return
+     */
+    @GetMapping("/{agentId}/model")
+    public Result<Map<String, Object>> getConfiguredModelId(@PathVariable String agentId){
+        String userId = UserContext.getCurrentUserId();
+        String modelId = agentWorkspaceAppService.getConfiguredModelId(agentId,userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("modelId", modelId);
+        return Result.success(result);
     }
 }

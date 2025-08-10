@@ -54,10 +54,9 @@ public class ConversationDomainService {
      * @param sessionId 会话id
      * @return 消息列表
      */
-    public List<MessageDTO> getConversationMessages(String sessionId) {
-        List<MessageEntity> messageEntities = messageRepository.selectList(
+    public List<MessageEntity> getConversationMessages(String sessionId) {
+        return messageRepository.selectList(
                 Wrappers.<MessageEntity>lambdaQuery().eq(MessageEntity::getSessionId, sessionId));
-        return messageEntities.stream().map(MessageAssembler::toDTO).collect(Collectors.toList());
     }
 
 

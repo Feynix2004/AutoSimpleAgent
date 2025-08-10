@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentVersionEntity;
+import org.feynix.infrastructure.repository.MyBatisPlusExtRepository;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * Agent仓库接口
  */
 @Mapper
-public interface AgentVersionRepository extends BaseMapper<AgentVersionEntity> {
+public interface AgentVersionRepository extends MyBatisPlusExtRepository<AgentVersionEntity> {
 
     /**
      * 根据名称和发布状态查询所有助理的最新版本

@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.apache.ibatis.type.JdbcType;
 import org.feynix.application.agent.dto.AgentVersionDTO;
 import org.feynix.domain.agent.constant.PublishStatus;
+import org.feynix.infrastructure.converter.AgentModelConfigConverter;
+import org.feynix.infrastructure.converter.ListConverter;
 import org.feynix.infrastructure.typehandler.JsonTypeHandler;
 
 import java.time.LocalDateTime;
@@ -71,19 +73,19 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
     /**
      * 模型配置，包含模型类型、温度等参数
      */
-    @TableField(value = "model_config", typeHandler = JsonTypeHandler.class, jdbcType = JdbcType.OTHER)
+    @TableField(value = "model_config", typeHandler = AgentModelConfigConverter.class, jdbcType = JdbcType.OTHER)
     private AgentModelConfig agentModelConfig;
 
     /**
      * Agent可使用的工具列表
      */
-    @TableField(value = "tools", typeHandler = JsonTypeHandler.class, jdbcType = JdbcType.OTHER)
+    @TableField(value = "tools", typeHandler = ListConverter.class, jdbcType = JdbcType.OTHER)
     private List<AgentTool> tools;
 
     /**
      * 关联的知识库ID列表
      */
-    @TableField(value = "knowledge_base_ids", typeHandler = JsonTypeHandler.class, jdbcType = JdbcType.OTHER)
+    @TableField(value = "knowledge_base_ids", typeHandler = ListConverter.class, jdbcType = JdbcType.OTHER)
     private List<String> knowledgeBaseIds;
 
     /**
