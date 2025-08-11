@@ -5,14 +5,18 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import org.feynix.infrastructure.converter.ListConverter;
+import org.feynix.infrastructure.entity.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 上下文实体类，管理会话的上下文窗口
  */
 @TableName("context")
-public class ContextEntity extends Model<ContextEntity> {
+public class ContextEntity  extends BaseEntity {
     /**
      * 上下文唯一ID
      */
@@ -26,10 +30,10 @@ public class ContextEntity extends Model<ContextEntity> {
     private String sessionId;
 
     /**
-     * 活跃消息ID列表，JSON数组
+     * 活跃消息ID列表
      */
-    @TableField(value = "active_messages", typeHandler = org.feynix.infrastructure.typehandler.JsonTypeHandler.class)
-    private String activeMessages;
+    @TableField(value = "active_messages", typeHandler = ListConverter.class)
+    private List<String> activeMessages = new ArrayList<>();
 
     /**
      * 历史消息摘要
@@ -37,11 +41,7 @@ public class ContextEntity extends Model<ContextEntity> {
     @TableField("summary")
     private String summary;
 
-    /**
-     * 最后更新时间
-     */
-    @TableField("updated_at")
-    private LocalDateTime updatedAt;
+
 
     /**
      * 无参构造函数
@@ -49,19 +49,6 @@ public class ContextEntity extends Model<ContextEntity> {
     public ContextEntity() {
     }
 
-    /**
-     * 全参构造函数
-     */
-    public ContextEntity(String id, String sessionId, String activeMessages,
-                         String summary, LocalDateTime updatedAt) {
-        this.id = id;
-        this.sessionId = sessionId;
-        this.activeMessages = activeMessages;
-        this.summary = summary;
-        this.updatedAt = updatedAt;
-    }
-
-    // Getter和Setter方法
     public String getId() {
         return id;
     }
@@ -78,11 +65,11 @@ public class ContextEntity extends Model<ContextEntity> {
         this.sessionId = sessionId;
     }
 
-    public String getActiveMessages() {
+    public List<String> getActiveMessages() {
         return activeMessages;
     }
 
-    public void setActiveMessages(String activeMessages) {
+    public void setActiveMessages(List<String> activeMessages) {
         this.activeMessages = activeMessages;
     }
 
@@ -92,13 +79,5 @@ public class ContextEntity extends Model<ContextEntity> {
 
     public void setSummary(String summary) {
         this.summary = summary;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

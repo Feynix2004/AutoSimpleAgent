@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        <title>AgentX Plus - AI 代理平台</title>
+        <title>AutoSimpleAgent - AI 代理平台</title>
         <meta name="description" content="您的全方位 AI 代理平台" />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>

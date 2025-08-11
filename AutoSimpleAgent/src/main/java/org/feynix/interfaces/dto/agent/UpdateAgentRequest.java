@@ -1,5 +1,6 @@
 package org.feynix.interfaces.dto.agent;
 
+import jakarta.validation.constraints.NotBlank;
 import org.feynix.domain.agent.model.AgentTool;
 import org.feynix.domain.agent.model.AgentModelConfig;
 import org.feynix.infrastructure.utils.ValidationUtils;
@@ -15,46 +16,35 @@ import java.util.List;
 public class UpdateAgentRequest {
 
 
-    // 基本信息字段
+
+    private String agentId;
+    @NotBlank(message = "助理名称不可为空")
     private String name;
     private String avatar;
     private String description;
+    private Boolean enabled;
 
     // 配置信息字段
     private String systemPrompt;
     private String welcomeMessage;
-    private AgentModelConfig agentModelConfig;
+    private AgentModelConfig modelConfig;
     private List<AgentTool> tools;
     private List<String> knowledgeBaseIds;
 
-    // 无参构造方法
-    public UpdateAgentRequest() {
+    public String getAgentId() {
+        return agentId;
     }
 
-    /**
-     * 全参构造方法
-     */
-    public UpdateAgentRequest(String name, String avatar, String description,
-                              String systemPrompt, String welcomeMessage,
-                              AgentModelConfig agentModelConfig, List<AgentTool> tools,
-                              List<String> knowledgeBaseIds) {
-        this.name = name;
-        this.avatar = avatar;
-        this.description = description;
-        this.systemPrompt = systemPrompt;
-        this.welcomeMessage = welcomeMessage;
-        this.agentModelConfig = agentModelConfig;
-        this.tools = tools;
-        this.knowledgeBaseIds = knowledgeBaseIds;
+    public void setAgentId(String agentId) {
+        this.agentId = agentId;
     }
 
-    /**
-     * 校验请求参数
-     */
-    public void validate() {
-        // 必填字段校验
-        ValidationUtils.notEmpty(name, "name");
-        ValidationUtils.length(name, 1, 50, "name");
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     // Getter和Setter方法
@@ -99,11 +89,11 @@ public class UpdateAgentRequest {
     }
 
     public AgentModelConfig getModelConfig() {
-        return agentModelConfig;
+        return modelConfig;
     }
 
-    public void setModelConfig(AgentModelConfig agentModelConfig) {
-        this.agentModelConfig = agentModelConfig;
+    public void setModelConfig(AgentModelConfig modelConfig) {
+        this.modelConfig = modelConfig;
     }
 
     public List<AgentTool> getTools() {
@@ -121,5 +111,6 @@ public class UpdateAgentRequest {
     public void setKnowledgeBaseIds(List<String> knowledgeBaseIds) {
         this.knowledgeBaseIds = knowledgeBaseIds;
     }
+
 
 }

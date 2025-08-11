@@ -4,6 +4,7 @@ import org.feynix.interfaces.dto.agent.CreateAgentRequest;
 import org.feynix.interfaces.dto.agent.PublishAgentVersionRequest;
 import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
 import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.feynix.application.agent.service.AgentAppService;
 import org.feynix.application.agent.dto.AgentDTO;
@@ -31,7 +32,7 @@ public class PortalAgentController {
      * 创建新Agent
      */
     @PostMapping
-    public Result<AgentDTO> createAgent(@RequestBody CreateAgentRequest request) {
+    public Result<AgentDTO> createAgent(@RequestBody @Validated CreateAgentRequest request) {
         String userId = UserContext.getCurrentUserId();
         AgentDTO agent = agentAppService.createAgent(request, userId);
         return Result.success(agent);
@@ -69,9 +70,10 @@ public class PortalAgentController {
      */
     @PutMapping("/{agentId}")
     public Result<AgentDTO> updateAgent(@PathVariable String agentId,
-            @RequestBody UpdateAgentRequest request) {
+                                        @RequestBody @Validated UpdateAgentRequest request) {
         String userId = UserContext.getCurrentUserId();
-        return Result.success(agentAppService.updateAgent(agentId, request, userId));
+        request.setAgentId(agentId);
+        return Result.success(agentAppService.updateAgent(request, userId));
     }
 
     /**
@@ -97,7 +99,7 @@ public class PortalAgentController {
      */
     @PostMapping("/{agentId}/publish")
     public Result<AgentVersionDTO> publishAgentVersion(@PathVariable String agentId,
-            @RequestBody PublishAgentVersionRequest request) {
+                                                       @RequestBody PublishAgentVersionRequest request) {
         String userId = UserContext.getCurrentUserId();
         return Result.success(agentAppService.publishAgentVersion(agentId, request, userId));
     }
@@ -116,7 +118,7 @@ public class PortalAgentController {
      */
     @GetMapping("/{agentId}/versions/{versionNumber}")
     public Result<AgentVersionDTO> getAgentVersion(@PathVariable String agentId,
-            @PathVariable String versionNumber) {
+                                                   @PathVariable String versionNumber) {
         return Result.success(agentAppService.getAgentVersion(agentId, versionNumber));
     }
 
