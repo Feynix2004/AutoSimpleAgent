@@ -2,7 +2,7 @@ package org.feynix.application.agent.dto;
 
 import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.domain.agent.constant.PublishStatus;
-import org.feynix.domain.agent.model.AgentModelConfig;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.agent.model.AgentTool;
 
 import java.time.LocalDateTime;
@@ -54,10 +54,6 @@ public class AgentVersionDTO {
      */
     private String welcomeMessage;
 
-    /**
-     * 模型配置，包含模型类型、温度等参数
-     */
-    private AgentModelConfig agentModelConfig;
 
     /**
      * Agent可使用的工具列表
@@ -114,16 +110,12 @@ public class AgentVersionDTO {
      */
     private LocalDateTime updatedAt;
 
-    /**
-     * 删除时间（软删除）
-     */
-    private LocalDateTime deletedAt;
 
     /**
      * 无参构造函数
      */
     public AgentVersionDTO() {
-        this.agentModelConfig = AgentModelConfig.createDefault();
+
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -133,7 +125,7 @@ public class AgentVersionDTO {
      */
     public AgentVersionDTO(String id, String agentId, String name, String avatar, String description,
                            String versionNumber, String systemPrompt, String welcomeMessage,
-                           AgentModelConfig agentModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                           LLMModelConfig LLMModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
                            String changeLog, Integer agentType, Integer publishStatus,
                            String rejectReason, LocalDateTime reviewTime, LocalDateTime publishedAt,
                            String userId, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
@@ -145,7 +137,7 @@ public class AgentVersionDTO {
         this.versionNumber = versionNumber;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.agentModelConfig = agentModelConfig;
+
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.changeLog = changeLog;
@@ -157,7 +149,7 @@ public class AgentVersionDTO {
         this.userId = userId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
+
     }
 
     // Getter和Setter方法
@@ -225,13 +217,6 @@ public class AgentVersionDTO {
         this.welcomeMessage = welcomeMessage;
     }
 
-    public AgentModelConfig getModelConfig() {
-        return agentModelConfig;
-    }
-
-    public void setModelConfig(AgentModelConfig agentModelConfig) {
-        this.agentModelConfig = agentModelConfig;
-    }
 
     public List<AgentTool> getTools() {
         return tools;
@@ -326,14 +311,6 @@ public class AgentVersionDTO {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
     }
 
     /**

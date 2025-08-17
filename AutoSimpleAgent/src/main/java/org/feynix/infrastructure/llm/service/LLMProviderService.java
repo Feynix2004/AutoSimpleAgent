@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LLMProviderService {
-    public static ChatLanguageModel getNormal(ProviderProtocol protocol, ProviderConfig providerConfig){
-        return LLMProviderFactory.getLLMProvider(protocol, providerConfig);
-    }
 
 
     public static StreamingChatLanguageModel getStream(ProviderProtocol protocol, ProviderConfig providerConfig){
         return LLMProviderFactory.getLLMProviderByStream(protocol, providerConfig);
+    }
+
+    public static ChatLanguageModel getStrand(ProviderProtocol protocol, ProviderConfig providerConfig){
+        return LLMProviderFactory.getLLMProvider(protocol, providerConfig);
     }
 }

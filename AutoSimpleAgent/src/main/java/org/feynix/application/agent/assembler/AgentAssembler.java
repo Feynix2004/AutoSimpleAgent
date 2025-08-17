@@ -4,10 +4,9 @@ import org.feynix.application.agent.dto.AgentDTO;
 import org.feynix.application.agent.dto.AgentVersionDTO;
 import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.domain.agent.model.*;
-import org.feynix.interfaces.dto.agent.CreateAgentRequest;
-import org.feynix.interfaces.dto.agent.PublishAgentVersionRequest;
-import org.feynix.interfaces.dto.agent.SearchAgentsRequest;
-import org.feynix.interfaces.dto.agent.UpdateAgentRequest;
+import org.feynix.interfaces.dto.agent.request.CreateAgentRequest;
+import org.feynix.interfaces.dto.agent.request.SearchAgentsRequest;
+import org.feynix.interfaces.dto.agent.request.UpdateAgentRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,12 +39,6 @@ public class AgentAssembler {
         // 设置初始状态为启用
         entity.setEnabled(true);
 
-        // 处理模型配置
-        if (request.getModelConfig() != null) {
-            entity.setModelConfig(request.getModelConfig());
-        } else {
-            entity.setModelConfig(AgentModelConfig.createDefault());
-        }
 
         // 设置工具和知识库ID
         entity.setTools(request.getTools() != null ? request.getTools() : new ArrayList<>());
@@ -75,7 +68,6 @@ public class AgentAssembler {
         entity.setAvatar(request.getAvatar());
         entity.setSystemPrompt(request.getSystemPrompt());
         entity.setWelcomeMessage(request.getWelcomeMessage());
-        entity.setModelConfig(request.getModelConfig());
         entity.setTools(request.getTools());
         entity.setKnowledgeBaseIds(request.getKnowledgeBaseIds());
         entity.setUserId(userId);
@@ -100,7 +92,7 @@ public class AgentAssembler {
         dto.setDescription(entity.getDescription());
         dto.setSystemPrompt(entity.getSystemPrompt());
         dto.setWelcomeMessage(entity.getWelcomeMessage());
-        dto.setModelConfig(entity.getModelConfig());
+
         dto.setTools(entity.getTools());
         dto.setKnowledgeBaseIds(entity.getKnowledgeBaseIds());
         dto.setPublishedVersion(entity.getPublishedVersion());
@@ -127,7 +119,7 @@ public class AgentAssembler {
         dto.setVersionNumber(entity.getVersionNumber());
         dto.setSystemPrompt(entity.getSystemPrompt());
         dto.setWelcomeMessage(entity.getWelcomeMessage());
-        dto.setModelConfig(entity.getModelConfig());
+
         dto.setTools(entity.getTools());
         dto.setKnowledgeBaseIds(entity.getKnowledgeBaseIds());
         dto.setChangeLog(entity.getChangeLog());

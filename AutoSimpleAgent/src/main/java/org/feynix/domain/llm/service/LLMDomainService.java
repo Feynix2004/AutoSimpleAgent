@@ -66,6 +66,17 @@ public class LLMDomainService {
         return provider;
     }
 
+    public ProviderEntity getProvider(String providerId) {
+
+        Wrapper<ProviderEntity> wrapper = Wrappers.<ProviderEntity>lambdaQuery().eq(ProviderEntity::getId, providerId);
+        ProviderEntity provider = providerRepository.selectOne(wrapper);
+        if (provider == null) {
+            throw new BusinessException("服务商不存在");
+        }
+        return provider;
+    }
+
+
     /**
      * 获取激活的模型列表
      * @param providerId 服务商ID

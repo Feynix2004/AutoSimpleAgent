@@ -10,7 +10,7 @@ import org.feynix.domain.agent.model.*;
 import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
 import org.feynix.infrastructure.exception.ParamValidationException;
-import org.feynix.interfaces.dto.agent.*;
+import org.feynix.interfaces.dto.agent.request.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

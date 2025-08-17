@@ -1,7 +1,7 @@
 package org.feynix.application.llm.dto;
 
 
-import org.feynix.domain.llm.model.config.LLMModelConfig;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.llm.model.enums.ModelType;
 
 import java.time.LocalDateTime;

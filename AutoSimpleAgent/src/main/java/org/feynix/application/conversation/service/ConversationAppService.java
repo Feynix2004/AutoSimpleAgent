@@ -5,6 +5,7 @@ import org.feynix.application.conversation.assembler.MessageAssembler;
 import org.feynix.application.conversation.dto.ChatRequest;
 import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentWorkspaceEntity;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
 import org.feynix.application.conversation.dto.MessageDTO;
@@ -20,7 +21,6 @@ import org.feynix.domain.conversation.service.MessageDomainService;
 import org.feynix.domain.conversation.service.SessionDomainService;
 import org.feynix.domain.llm.model.ModelEntity;
 import org.feynix.domain.llm.model.ProviderEntity;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
 import org.feynix.domain.llm.service.LLMDomainService;
 import org.feynix.domain.token.model.TokenMessage;
 import org.feynix.domain.shared.enums.TokenOverflowStrategyEnum;
@@ -52,7 +52,7 @@ public class ConversationAppService {
     private final AgentDomainService agentDomainService;
     private final AgentWorkspaceDomainService agentWorkspaceDomainService;
 
-    private final LLMProviderService llmProviderService;
+
 
     private final ContextDomainService contextDomainService;
     private final MessageDomainService messageDomainService;
@@ -69,7 +69,7 @@ public class ConversationAppService {
             AgentDomainService agentDomainService,
             AgentWorkspaceDomainService agentWorkspaceDomainService,
             LLMDomainService llmDomainService,
-            LLMProviderService llmProviderService,
+
             ContextDomainService contextDomainService,
 
             MessageDomainService messageDomainService,
@@ -83,7 +83,7 @@ public class ConversationAppService {
         this.agentDomainService = agentDomainService;
         this.agentWorkspaceDomainService = agentWorkspaceDomainService;
         this.llmDomainService = llmDomainService;
-        this.llmProviderService = llmProviderService;
+
         this.contextDomainService = contextDomainService;
         this.messageDomainService = messageDomainService;
         this.tokenDomainService = tokenDomainService;
@@ -154,6 +154,7 @@ public class ConversationAppService {
         LLMModelConfig llmModelConfig = workspace.getLlmModelConfig();
         String modelId = llmModelConfig.getModelId();
         ModelEntity model = llmDomainService.getModelById(modelId);
+
         model.isActive();
 
         // 4. 获取服务商信息

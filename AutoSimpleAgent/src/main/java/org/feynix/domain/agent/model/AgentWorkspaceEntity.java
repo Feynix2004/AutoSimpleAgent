@@ -6,11 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.ibatis.type.JdbcType;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
 import org.feynix.infrastructure.converter.LLMModelConfigConverter;
 import org.feynix.infrastructure.entity.BaseEntity;
-
-import java.time.LocalDateTime;
 
 /**
  * Agent工作区实体类

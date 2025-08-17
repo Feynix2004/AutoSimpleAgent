@@ -3,12 +3,7 @@ package org.feynix.domain.agent.model;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import org.apache.ibatis.type.JdbcType;
-import org.feynix.application.agent.dto.AgentDTO;
 import org.feynix.domain.agent.constant.AgentType;
-import org.feynix.infrastructure.converter.AgentModelConfigConverter;
-import org.feynix.infrastructure.converter.ListConverter;
-import org.feynix.infrastructure.typehandler.JsonTypeHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,21 +51,15 @@ public class AgentEntity extends Model<AgentEntity> {
     private String welcomeMessage;
 
     /**
-     * 模型配置，包含模型类型、温度等参数
-     */
-    @TableField(value = "model_config", typeHandler = AgentModelConfigConverter.class, jdbcType = JdbcType.OTHER)
-    private AgentModelConfig agentModelConfig;
-
-    /**
      * Agent可使用的工具列表
      */
-    @TableField(value = "tools", typeHandler = ListConverter.class, jdbcType = JdbcType.OTHER)
+    @TableField(value = "tools", exist = false)
     private List<AgentTool> tools;
 
     /**
      * 关联的知识库ID列表
      */
-    @TableField(value = "knowledge_base_ids", typeHandler = ListConverter.class, jdbcType = JdbcType.OTHER)
+    @TableField(value = "knowledge_base_ids", exist = false)
     private List<String> knowledgeBaseIds;
 
     /**
@@ -120,7 +109,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 无参构造函数
      */
     public AgentEntity() {
-        this.agentModelConfig = AgentModelConfig.createDefault();
+
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -129,7 +118,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 全参构造函数
      */
     public AgentEntity(String id, String name, String avatar, String description, String systemPrompt,
-                       String welcomeMessage, AgentModelConfig agentModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                       String welcomeMessage, LLMModelConfig LLMModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
                        String publishedVersion, Boolean enabled, Integer agentType, String userId,
                        LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.id = id;
@@ -138,7 +127,7 @@ public class AgentEntity extends Model<AgentEntity> {
         this.description = description;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.agentModelConfig = agentModelConfig;
+
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.publishedVersion = publishedVersion;
@@ -197,14 +186,6 @@ public class AgentEntity extends Model<AgentEntity> {
 
     public void setWelcomeMessage(String welcomeMessage) {
         this.welcomeMessage = welcomeMessage;
-    }
-
-    public AgentModelConfig getModelConfig() {
-        return agentModelConfig != null ? agentModelConfig : AgentModelConfig.createDefault();
-    }
-
-    public void setModelConfig(AgentModelConfig agentModelConfig) {
-        this.agentModelConfig = agentModelConfig;
     }
 
     public List<AgentTool> getTools() {
@@ -308,11 +289,11 @@ public class AgentEntity extends Model<AgentEntity> {
     /**
      * 更新Agent配置
      */
-    public void updateConfig(String systemPrompt, String welcomeMessage, AgentModelConfig agentModelConfig,
+    public void updateConfig(String systemPrompt, String welcomeMessage, LLMModelConfig LLMModelConfig,
                              List<AgentTool> tools, List<String> knowledgeBaseIds) {
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.agentModelConfig = agentModelConfig;
+
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.updatedAt = LocalDateTime.now();
@@ -347,29 +328,6 @@ public class AgentEntity extends Model<AgentEntity> {
      */
     public void delete() {
         this.deletedAt = LocalDateTime.now();
-    }
-
-    /**
-     * 转换为DTO对象
-     */
-    public AgentDTO toDTO() {
-        AgentDTO dto = new AgentDTO();
-        dto.setId(this.id);
-        dto.setName(this.name);
-        dto.setAvatar(this.avatar);
-        dto.setDescription(this.description);
-        dto.setSystemPrompt(this.systemPrompt);
-        dto.setWelcomeMessage(this.welcomeMessage);
-        dto.setModelConfig(this.agentModelConfig);
-        dto.setTools(this.tools);
-        dto.setKnowledgeBaseIds(this.knowledgeBaseIds);
-        dto.setPublishedVersion(this.publishedVersion);
-        dto.setEnabled(this.enabled);
-        dto.setAgentType(this.agentType);
-        dto.setUserId(this.userId);
-        dto.setCreatedAt(this.createdAt);
-        dto.setUpdatedAt(this.updatedAt);
-        return dto;
     }
 
     /**

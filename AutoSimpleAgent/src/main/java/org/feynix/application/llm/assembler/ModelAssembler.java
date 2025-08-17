@@ -3,8 +3,8 @@ package org.feynix.application.llm.assembler;
 
 import org.feynix.application.llm.dto.ModelDTO;
 import org.feynix.domain.llm.model.ModelEntity;
-import org.feynix.interfaces.dto.llm.ModelCreateRequest;
-import org.feynix.interfaces.dto.llm.ModelUpdateRequest;
+import org.feynix.interfaces.dto.llm.request.ModelCreateRequest;
+import org.feynix.interfaces.dto.llm.request.ModelUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class ModelAssembler {
         dto.setName(model.getName());
         dto.setDescription(model.getDescription());
         dto.setType(model.getType());
-        dto.setConfig(model.getConfig());
+
         dto.setStatus(model.getStatus());
         dto.setCreatedAt(model.getCreatedAt());
         dto.setUpdatedAt(model.getUpdatedAt());
@@ -63,7 +63,7 @@ public class ModelAssembler {
         model.setName(request.getName());
         model.setDescription(request.getDescription());
         model.setType(request.getType());
-        model.setConfig(request.getConfig());
+
         model.setCreatedAt(LocalDateTime.now());
         model.setUpdatedAt(LocalDateTime.now());
 
@@ -77,7 +77,7 @@ public class ModelAssembler {
         model.setName(request.getName());
         model.setDescription(request.getDescription());
         model.setModelId(request.getModelId());
-        model.setConfig(request.getConfig());
+
         model.setCreatedAt(LocalDateTime.now());
         model.setUpdatedAt(LocalDateTime.now());
         model.setId(request.getId());

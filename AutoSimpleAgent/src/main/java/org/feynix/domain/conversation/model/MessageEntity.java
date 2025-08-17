@@ -2,8 +2,11 @@ package org.feynix.domain.conversation.model;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import org.feynix.domain.conversation.constant.MessageType;
 import org.feynix.domain.conversation.constant.Role;
+import org.feynix.infrastructure.converter.MessageTypeConverter;
 import org.feynix.infrastructure.converter.RoleConverter;
+import org.feynix.infrastructure.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +14,7 @@ import java.time.LocalDateTime;
  * 消息实体类，代表对话中的一条消息
  */
 @TableName("messages")
-public class MessageEntity extends Model<MessageEntity> {
+public class MessageEntity extends BaseEntity {
     /**
      * 消息唯一ID
      */
@@ -35,6 +38,13 @@ public class MessageEntity extends Model<MessageEntity> {
      */
     @TableField("content")
     private String content;
+
+    /**
+     * 消息类型
+     */
+    @TableField(value = "message_type", typeHandler = MessageTypeConverter.class)
+    private MessageType messageType = MessageType.TEXT;
+
 
     /**
      * 创建时间
@@ -96,7 +106,13 @@ public class MessageEntity extends Model<MessageEntity> {
     public void setRole(Role role) {
         this.role = role;
     }
+    public MessageType getMessageType() {
+        return messageType;
+    }
 
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
     public String getContent() {
         return content;
     }

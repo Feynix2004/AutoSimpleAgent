@@ -68,7 +68,7 @@ if %attempts% geq 30 (
 docker inspect --format="{{.State.Health.Status}}" agentx-postgres | findstr "healthy" >nul
 if %ERRORLEVEL% neq 0 (
     set /a attempts+=1
-    ping -n 2 127.0.0.1 >nul
+    ping -n 2 127.0.0.1 > nul
     goto WAIT_LOOP
 )
 

@@ -39,4 +39,11 @@ public interface MyBatisPlusExtRepository<T> extends BaseMapper<T> {
             throw new BusinessException("数据更新失败");
         }
     }
+
+    default void checkInsert(T t) {
+        int affected = insert(t);
+        if (affected == 0) {
+            throw new BusinessException("数据更新失败");
+        }
+    }
 }

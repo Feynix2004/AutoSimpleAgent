@@ -3,9 +3,8 @@ package org.feynix.infrastructure.config;
 import jakarta.annotation.PostConstruct;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.feynix.domain.agent.model.AgentModelConfig;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.conversation.constant.Role;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
 import org.feynix.domain.llm.model.config.ProviderConfig;
 import org.feynix.domain.llm.model.enums.ModelType;
 import org.feynix.infrastructure.converter.*;
@@ -38,8 +37,8 @@ public class MyBatisTypeHandlerConfig {
 
         // 确保自动扫描没有生效时，我们手动注册需要的转换器
         typeHandlerRegistry.register(ProviderConfig.class, new ProviderConfigConverter());
-        typeHandlerRegistry.register(AgentModelConfig.class, new AgentModelConfigConverter());
-        typeHandlerRegistry.register(AgentModelConfig.class, new AgentModelConfigConverter());
+        typeHandlerRegistry.register(LLMModelConfig.class, new AgentModelConfigConverter());
+        typeHandlerRegistry.register(LLMModelConfig.class, new AgentModelConfigConverter());
         typeHandlerRegistry.register(List.class, new ListConverter());
         typeHandlerRegistry.register(LLMModelConfig.class, new ModelConfigConverter());
         typeHandlerRegistry.register(ModelType.class, new ModelTypeConverter());

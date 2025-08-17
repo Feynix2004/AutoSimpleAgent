@@ -3,6 +3,7 @@ package org.feynix.domain.agent.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.feynix.application.agent.assembler.AgentAssembler;
 import org.feynix.application.agent.dto.AgentDTO;
@@ -82,5 +83,12 @@ public class AgentWorkspaceDomainService {
                 .eq(AgentWorkspaceEntity::getAgentId, agentId)
                 .eq(AgentWorkspaceEntity::getUserId, userId);
         return agentWorkspaceRepository.selectOne(wrapper);
+    }
+
+    public void update(AgentWorkspaceEntity workspace) {
+        LambdaUpdateWrapper<AgentWorkspaceEntity> wrapper = Wrappers.<AgentWorkspaceEntity>lambdaUpdate()
+                .eq(AgentWorkspaceEntity::getAgentId, workspace.getAgentId())
+                .eq(AgentWorkspaceEntity::getAgentId, workspace.getAgentId());
+        agentWorkspaceRepository.checkedUpdate(workspace,wrapper);
     }
 }

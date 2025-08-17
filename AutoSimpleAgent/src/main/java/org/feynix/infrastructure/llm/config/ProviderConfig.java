@@ -25,7 +25,15 @@ public class ProviderConfig {
 
 
     private ProviderProtocol protocol;
+    private Map<String,String> customHeaders = new HashMap<>();
 
+    public Map<String, String> getCustomHeaders() {
+        return customHeaders;
+    }
+
+    public void addCustomHeaders(String key,String value) {
+        customHeaders.put(key,value);
+    }
 
     public ProviderProtocol getProtocol() {
         return protocol;
@@ -47,7 +55,7 @@ public class ProviderConfig {
         this.model = model;
     }
 
-    private Map<String,String> customHeaders = new HashMap<>();
+
 
     public String getApiKey() {
         return apiKey;
@@ -64,8 +72,6 @@ public class ProviderConfig {
         this.protocol = protocol;
     }
 
-    public Map<String, String> getCustomHeaders() {
-        return customHeaders;
-    }
+
 
 }

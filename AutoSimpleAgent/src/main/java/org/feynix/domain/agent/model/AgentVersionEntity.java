@@ -4,23 +4,21 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.apache.ibatis.type.JdbcType;
-import org.feynix.application.agent.dto.AgentVersionDTO;
 import org.feynix.domain.agent.constant.PublishStatus;
-import org.feynix.infrastructure.converter.AgentModelConfigConverter;
 import org.feynix.infrastructure.converter.ListConverter;
-import org.feynix.infrastructure.typehandler.JsonTypeHandler;
+import org.feynix.infrastructure.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Agent版本实体类，代表一个Agent的发布版本
  */
 @TableName(value = "agent_versions", autoResultMap = true)
-public class AgentVersionEntity extends Model<AgentVersionEntity> {
+public class AgentVersionEntity extends BaseEntity {
 
     /**
      * 版本唯一ID
@@ -70,11 +68,6 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
     @TableField("welcome_message")
     private String welcomeMessage;
 
-    /**
-     * 模型配置，包含模型类型、温度等参数
-     */
-    @TableField(value = "model_config", typeHandler = AgentModelConfigConverter.class, jdbcType = JdbcType.OTHER)
-    private AgentModelConfig agentModelConfig;
 
     /**
      * Agent可使用的工具列表
@@ -129,30 +122,10 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
      */
     @TableField("user_id")
     private String userId;
-
-    /**
-     * 创建时间
-     */
-    @TableField("created_at")
-    private LocalDateTime createdAt;
-
-    /**
-     * 最后更新时间
-     */
-    @TableField("updated_at")
-    private LocalDateTime updatedAt;
-
-    /**
-     * 删除时间（软删除）
-     */
-    @TableField("deleted_at")
-    private LocalDateTime deletedAt;
-
     /**
      * 无参构造函数
      */
     public AgentVersionEntity() {
-        this.agentModelConfig = AgentModelConfig.createDefault();
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -162,7 +135,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
      */
     public AgentVersionEntity(String id, String agentId, String name, String avatar, String description,
                               String versionNumber, String systemPrompt, String welcomeMessage,
-                              AgentModelConfig agentModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                              LLMModelConfig LLMModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
                               String changeLog, Integer agentType, String userId,
                               LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt,
                               Integer publishStatus, String rejectReason, LocalDateTime reviewTime,
@@ -175,7 +148,7 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         this.versionNumber = versionNumber;
         this.systemPrompt = systemPrompt;
         this.welcomeMessage = welcomeMessage;
-        this.agentModelConfig = agentModelConfig;
+
         this.tools = tools;
         this.knowledgeBaseIds = knowledgeBaseIds;
         this.changeLog = changeLog;
@@ -229,14 +202,6 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
 
     public void setWelcomeMessage(String welcomeMessage) {
         this.welcomeMessage = welcomeMessage;
-    }
-
-    public AgentModelConfig getModelConfig() {
-        return agentModelConfig != null ? agentModelConfig : AgentModelConfig.createDefault();
-    }
-
-    public void setModelConfig(AgentModelConfig agentModelConfig) {
-        this.agentModelConfig = agentModelConfig;
     }
 
     public List<AgentTool> getTools() {
@@ -395,7 +360,6 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         version.setVersionNumber(versionNumber);
         version.setSystemPrompt(agent.getSystemPrompt());
         version.setWelcomeMessage(agent.getWelcomeMessage());
-        version.setModelConfig(agent.getModelConfig());
         version.setTools(agent.getTools());
         version.setKnowledgeBaseIds(agent.getKnowledgeBaseIds());
         version.setChangeLog(changeLog);
@@ -412,34 +376,5 @@ public class AgentVersionEntity extends Model<AgentVersionEntity> {
         version.setPublishStatus(PublishStatus.REVIEWING.getCode());
         version.setReviewTime(now);
         return version;
-    }
-
-    /**
-     * 转换为DTO对象
-     */
-    public AgentVersionDTO toDTO() {
-        AgentVersionDTO dto = new AgentVersionDTO();
-        dto.setId(this.id);
-        dto.setAgentId(this.agentId);
-        dto.setName(this.name);
-        dto.setAvatar(this.avatar);
-        dto.setDescription(this.description);
-        dto.setVersionNumber(this.versionNumber);
-        dto.setSystemPrompt(this.systemPrompt);
-        dto.setWelcomeMessage(this.welcomeMessage);
-        dto.setModelConfig(this.agentModelConfig);
-        dto.setTools(this.tools);
-        dto.setKnowledgeBaseIds(this.knowledgeBaseIds);
-        dto.setChangeLog(this.changeLog);
-        dto.setAgentType(this.agentType);
-        dto.setPublishStatus(this.publishStatus);
-        dto.setRejectReason(this.rejectReason);
-        dto.setReviewTime(this.reviewTime);
-        dto.setPublishedAt(this.publishedAt);
-        dto.setUserId(this.userId);
-        dto.setCreatedAt(this.createdAt);
-        dto.setUpdatedAt(this.updatedAt);
-        dto.setDeletedAt(this.deletedAt);
-        return dto;
     }
 }

@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.ibatis.type.JdbcType;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
 import org.feynix.domain.llm.model.enums.ModelType;
-import org.feynix.infrastructure.converter.ModelConfigConverter;
 import org.feynix.infrastructure.converter.ModelTypeConverter;
 import org.feynix.infrastructure.entity.BaseEntity;
 import org.feynix.infrastructure.exception.BusinessException;
@@ -31,12 +29,13 @@ public class ModelEntity extends BaseEntity {
     @TableField(typeHandler = ModelTypeConverter.class, jdbcType = JdbcType.VARCHAR)
     private ModelType type;
 
-    @TableField(typeHandler = ModelConfigConverter.class)
-    private LLMModelConfig config;
 
     private Boolean status;
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public String getId() {
         return id;
@@ -94,13 +93,9 @@ public class ModelEntity extends BaseEntity {
         this.type = type;
     }
 
-    public LLMModelConfig getConfig() {
-        return config;
-    }
 
-    public void setConfig(LLMModelConfig config) {
-        this.config = config;
-    }
+
+
 
     public Boolean getStatus() {
         return status;

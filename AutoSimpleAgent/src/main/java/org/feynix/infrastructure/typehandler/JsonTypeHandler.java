@@ -5,7 +5,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 import org.feynix.domain.agent.model.AgentTool;
-import org.feynix.domain.agent.model.AgentModelConfig;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.infrastructure.exception.ParamValidationException;
 import org.feynix.infrastructure.utils.JsonUtils;
 import org.postgresql.util.PGobject;
@@ -23,7 +23,7 @@ import java.util.List;
  * @param <T> 要处理的Java类型
  */
 @MappedJdbcTypes(JdbcType.OTHER)
-@MappedTypes({ Object.class, List.class, AgentModelConfig.class, AgentTool.class })
+@MappedTypes({ Object.class, List.class, LLMModelConfig.class, AgentTool.class })
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private final Class<T> clazz;

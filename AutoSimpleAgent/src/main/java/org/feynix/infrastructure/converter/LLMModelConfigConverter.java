@@ -1,7 +1,7 @@
 package org.feynix.infrastructure.converter;
 
 import org.apache.ibatis.type.MappedTypes;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
+import org.feynix.domain.agent.model.LLMModelConfig;
 
 /**
  * LLMModelConfig JSON转换器

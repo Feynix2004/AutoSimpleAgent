@@ -3,7 +3,6 @@ package org.feynix.application.agent.dto;
 import org.feynix.domain.agent.constant.AgentStatus;
 import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.domain.agent.model.AgentEntity;
-import org.feynix.domain.agent.model.AgentModelConfig;
 import org.feynix.domain.agent.model.AgentTool;
 
 import java.time.LocalDateTime;
@@ -42,10 +41,7 @@ public class AgentDTO {
      */
     private String welcomeMessage;
 
-    /**
-     * 模型配置，包含模型类型、温度等参数
-     */
-    private AgentModelConfig agentModelConfig;
+
 
     /**
      * Agent可使用的工具列表
@@ -91,7 +87,7 @@ public class AgentDTO {
      * 无参构造函数
      */
     public AgentDTO() {
-        this.agentModelConfig = AgentModelConfig.createDefault();
+
         this.tools = new ArrayList<>();
         this.knowledgeBaseIds = new ArrayList<>();
     }
@@ -145,13 +141,6 @@ public class AgentDTO {
         this.welcomeMessage = welcomeMessage;
     }
 
-    public AgentModelConfig getModelConfig() {
-        return agentModelConfig;
-    }
-
-    public void setModelConfig(AgentModelConfig agentModelConfig) {
-        this.agentModelConfig = agentModelConfig;
-    }
 
     public List<AgentTool> getTools() {
         return tools;
@@ -243,7 +232,7 @@ public class AgentDTO {
         entity.setDescription(this.description);
         entity.setSystemPrompt(this.systemPrompt);
         entity.setWelcomeMessage(this.welcomeMessage);
-        entity.setModelConfig(this.agentModelConfig);
+
         entity.setTools(this.tools);
         entity.setKnowledgeBaseIds(this.knowledgeBaseIds);
         entity.setPublishedVersion(this.publishedVersion);

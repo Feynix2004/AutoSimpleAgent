@@ -1,11 +1,11 @@
 package org.feynix.domain.conversation.handler;
 
 import org.feynix.domain.agent.model.AgentEntity;
+import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.conversation.model.ContextEntity;
 import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.llm.model.ModelEntity;
 import org.feynix.domain.llm.model.ProviderEntity;
-import org.feynix.domain.llm.model.config.LLMModelConfig;
 
 import java.util.List;
 
