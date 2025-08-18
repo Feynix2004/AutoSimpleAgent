@@ -1,4 +1,4 @@
-package org.feynix.infrastructure.llm.service;
+package org.feynix.infrastructure.llm;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;

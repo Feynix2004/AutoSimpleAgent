@@ -81,4 +81,16 @@ public class SseMessageTransport implements MessageTransport<SseEmitter> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void sendEndMessage(SseEmitter connection, AgentChatResponse streamChatResponse) {
+        try {
+
+            connection.send(streamChatResponse);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            connection.complete();
+        }
+    }
 }

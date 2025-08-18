@@ -4,6 +4,7 @@ package org.feynix.domain.agent.model;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.feynix.domain.agent.constant.AgentType;
+import org.feynix.infrastructure.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
  * Agent实体类，代表一个AI助手
  */
 @TableName(value = "agents", autoResultMap = true)
-public class AgentEntity extends Model<AgentEntity> {
+public class AgentEntity extends BaseEntity {
     /**
      * Agent唯一ID
      */
@@ -72,7 +73,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * Agent状态：1-启用，0-禁用
      */
     @TableField("enabled")
-    private Boolean enabled=true;
+    private Boolean enabled;
 
     /**
      * Agent类型：1-聊天助手, 2-功能性Agent
@@ -86,24 +87,6 @@ public class AgentEntity extends Model<AgentEntity> {
     @TableField("user_id")
     private String userId;
 
-    /**
-     * 创建时间
-     */
-    @TableField("created_at")
-    private LocalDateTime createdAt;
-
-    /**
-     * 最后更新时间
-     */
-    @TableField("updated_at")
-    private LocalDateTime updatedAt;
-
-    /**
-     * 删除时间（软删除）
-     */
-    @TableField("deleted_at")
-    @TableLogic
-    private LocalDateTime deletedAt;
 
     /**
      * 无参构造函数
@@ -118,7 +101,7 @@ public class AgentEntity extends Model<AgentEntity> {
      * 全参构造函数
      */
     public AgentEntity(String id, String name, String avatar, String description, String systemPrompt,
-                       String welcomeMessage, LLMModelConfig LLMModelConfig, List<AgentTool> tools, List<String> knowledgeBaseIds,
+                       String welcomeMessage, List<AgentTool> tools, List<String> knowledgeBaseIds,
                        String publishedVersion, Boolean enabled, Integer agentType, String userId,
                        LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.id = id;

@@ -3,15 +3,16 @@ package org.feynix.application.conversation.service;
 
 import org.feynix.application.conversation.assembler.MessageAssembler;
 import org.feynix.application.conversation.dto.ChatRequest;
+import org.feynix.application.conversation.service.handler.content.ChatContext;
+import org.feynix.application.conversation.service.message.AbstractMessageHandler;
 import org.feynix.domain.agent.model.AgentEntity;
 import org.feynix.domain.agent.model.AgentWorkspaceEntity;
 import org.feynix.domain.agent.model.LLMModelConfig;
 import org.feynix.domain.agent.service.AgentDomainService;
 import org.feynix.domain.agent.service.AgentWorkspaceDomainService;
 import org.feynix.application.conversation.dto.MessageDTO;
-import org.feynix.domain.conversation.handler.ChatEnvironment;
-import org.feynix.domain.conversation.handler.MessageHandler;
-import org.feynix.domain.conversation.handler.MessageHandlerFactory;
+
+import org.feynix.application.conversation.service.handler.MessageHandlerFactory;
 import org.feynix.domain.conversation.model.ContextEntity;
 import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.conversation.model.SessionEntity;
@@ -28,7 +29,6 @@ import org.feynix.domain.token.model.TokenProcessResult;
 import org.feynix.domain.token.model.config.TokenOverflowConfig;
 import org.feynix.domain.token.service.TokenDomainService;
 import org.feynix.infrastructure.exception.BusinessException;
-import org.feynix.infrastructure.llm.service.LLMProviderService;
 import org.feynix.infrastructure.llm.config.ProviderConfig;
 import org.feynix.infrastructure.transport.MessageTransport;
 import org.feynix.infrastructure.transport.MessageTransportFactory;
@@ -118,16 +118,16 @@ public class ConversationAppService {
      */
     public SseEmitter chat(ChatRequest chatRequest, String userId) {
         // 1. 准备对话环境
-        ChatEnvironment environment = prepareEnvironment(chatRequest, userId);
+        ChatContext environment = prepareEnvironment(chatRequest, userId);
 
         // 2. 获取传输方式 (当前仅支持SSE，将来支持WebSocket)
         MessageTransport<SseEmitter> transport = transportFactory.getTransport(MessageTransportFactory.TRANSPORT_TYPE_SSE);
 
         // 3. 获取适合的消息处理器 (根据agent类型)
-        MessageHandler handler = messageHandlerFactory.getHandler(environment.getAgent());
+        AbstractMessageHandler handler = messageHandlerFactory.getHandler(environment.getAgent());
 
         // 4. 处理对话
-        return handler.handleChat(environment, transport);
+        return handler.chat(environment, transport);
     }
 
     /**
@@ -137,7 +137,7 @@ public class ConversationAppService {
      * @param userId 用户ID
      * @return 对话环境
      */
-    private ChatEnvironment prepareEnvironment(ChatRequest chatRequest, String userId) {
+    private ChatContext prepareEnvironment(ChatRequest chatRequest, String userId) {
         // 1. 获取会话
         String sessionId = chatRequest.getSessionId();
         SessionEntity session = sessionDomainService.getSession(sessionId, userId);
@@ -162,7 +162,7 @@ public class ConversationAppService {
         provider.isActive();
 
         // 5. 创建环境对象
-        ChatEnvironment environment = new ChatEnvironment();
+        ChatContext environment = new ChatContext();
         environment.setSessionId(sessionId);
         environment.setUserId(userId);
         environment.setUserMessage(chatRequest.getMessage());
@@ -182,7 +182,7 @@ public class ConversationAppService {
      *
      * @param environment 对话环境
      */
-    private void setupContextAndHistory(ChatEnvironment environment) {
+    private void setupContextAndHistory(ChatContext environment) {
         String sessionId = environment.getSessionId();
 
         // 获取上下文
@@ -213,7 +213,7 @@ public class ConversationAppService {
      * @param messageEntities 消息实体列表
      */
     private void applyTokenOverflowStrategy(
-            ChatEnvironment environment,
+            ChatContext environment,
             ContextEntity contextEntity,
             List<MessageEntity> messageEntities) {
 

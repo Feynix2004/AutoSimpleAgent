@@ -32,10 +32,7 @@ public class ModelEntity extends BaseEntity {
 
     private Boolean status;
 
-    @Override
-    public String toString() {
-        return name;
-    }
+
 
     public String getId() {
         return id;

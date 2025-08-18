@@ -32,4 +32,11 @@ public interface MessageTransport<T> {
      * @param error 错误对象
      */
     void handleError(T connection, Throwable error);
+
+    /**
+     * 发送消息
+     * @param connection 连接对象
+     * @param streamChatResponse 消息内容
+     */
+    void sendEndMessage(T connection, AgentChatResponse streamChatResponse);
 }

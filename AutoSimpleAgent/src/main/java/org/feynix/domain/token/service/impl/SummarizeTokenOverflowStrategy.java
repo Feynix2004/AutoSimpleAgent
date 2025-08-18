@@ -12,7 +12,7 @@ import org.feynix.domain.token.model.TokenProcessResult;
 import org.feynix.domain.token.model.config.TokenOverflowConfig;
 import org.feynix.domain.shared.enums.TokenOverflowStrategyEnum;
 import org.feynix.domain.token.service.TokenOverflowStrategy;
-import org.feynix.infrastructure.llm.service.LLMProviderService;
+import org.feynix.infrastructure.llm.LLMProviderService;
 import org.feynix.infrastructure.llm.config.ProviderConfig;
 import org.springframework.stereotype.Service;
 
