@@ -3,7 +3,6 @@ package org.feynix.interfaces.dto.agent.request;
 import org.feynix.domain.agent.model.AgentTool;
 import org.feynix.domain.agent.constant.AgentType;
 import org.feynix.domain.agent.model.LLMModelConfig;
-import org.feynix.infrastructure.utils.ValidationUtils;
 
 import java.util.List;
 

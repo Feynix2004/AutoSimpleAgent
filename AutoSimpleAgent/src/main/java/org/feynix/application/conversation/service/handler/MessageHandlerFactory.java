@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
  */
 enum MessageHandlerType {
     STANDARD,
-    AGENT
+    AGENT,
+    AGENT2
 }
 
 /**
@@ -36,13 +37,14 @@ public class MessageHandlerFactory {
     public AbstractMessageHandler getHandler(AgentEntity agent) {
         // 目前暂时使用标准处理器
         // 后续可根据agent属性判断是否支持React模式
-        if (agent.getAgentType() == 1){
-            return getHandlerByType(MessageHandlerType.STANDARD);
-
-        }else if (agent.getAgentType() == 2){
-            return getHandlerByType(MessageHandlerType.AGENT);
-        }
-        return getHandlerByType(MessageHandlerType.STANDARD);
+//        if (agent.getAgentType() == 1){
+//            return getHandlerByType(MessageHandlerType.STANDARD);
+//
+//        }else if (agent.getAgentType() == 2){
+//            return getHandlerByType(MessageHandlerType.AGENT);
+//        }
+//        return getHandlerByType(MessageHandlerType.STANDARD);
+        return getHandlerByType(MessageHandlerType.AGENT2);
     }
 
     /**
@@ -55,6 +57,8 @@ public class MessageHandlerFactory {
         switch (type) {
             case AGENT:
                 return applicationContext.getBean("agentMessageHandler", AbstractMessageHandler.class);
+            case AGENT2:
+                return applicationContext.getBean("agentV2MessageHandler", AbstractMessageHandler.class);
             case STANDARD:
             default:
                 return applicationContext.getBean("chatMessageHandler", AbstractMessageHandler.class);

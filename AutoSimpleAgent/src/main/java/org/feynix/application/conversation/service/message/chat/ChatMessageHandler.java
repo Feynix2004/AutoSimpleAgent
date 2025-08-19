@@ -14,6 +14,7 @@ import org.feynix.domain.conversation.constant.Role;
 import org.feynix.domain.conversation.model.MessageEntity;
 import org.feynix.domain.conversation.service.ContextDomainService;
 import org.feynix.domain.conversation.service.ConversationDomainService;
+import org.feynix.domain.conversation.service.MessageDomainService;
 import org.feynix.infrastructure.llm.LLMServiceFactory;
 import org.feynix.infrastructure.transport.MessageTransport;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,9 @@ public class ChatMessageHandler extends AbstractMessageHandler {
 
 
     public ChatMessageHandler(
-            ConversationDomainService conversationDomainService,
-            ContextDomainService contextDomainService,
+            MessageDomainService messageDomainService ,
             LLMServiceFactory llmServiceFactory) {
-        super(conversationDomainService, contextDomainService, llmServiceFactory);
+        super(messageDomainService, llmServiceFactory);
     }
 
     @Override

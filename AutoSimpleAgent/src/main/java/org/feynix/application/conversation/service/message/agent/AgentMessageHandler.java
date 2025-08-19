@@ -1,24 +1,6 @@
 package org.feynix.application.conversation.service.message.agent;
 
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.SystemMessage;
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.mcp.McpToolProvider;
-import dev.langchain4j.mcp.client.DefaultMcpClient;
-import dev.langchain4j.mcp.client.McpClient;
-import dev.langchain4j.mcp.client.transport.McpTransport;
-import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
-import dev.langchain4j.model.chat.request.ChatRequest;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import dev.langchain4j.model.openai.OpenAiChatRequestParameters;
-import dev.langchain4j.model.output.TokenUsage;
-import dev.langchain4j.service.AiServices;
-import dev.langchain4j.service.tool.ToolProvider;
-import org.feynix.application.conversation.dto.AgentChatResponse;
+
 import org.feynix.application.conversation.service.handler.content.ChatContext;
 import org.feynix.application.conversation.service.message.AbstractMessageHandler;
 import org.feynix.application.conversation.service.message.agent.event.AgentEventBus;
@@ -30,28 +12,21 @@ import org.feynix.application.conversation.service.message.agent.manager.TaskMan
 import org.feynix.application.conversation.service.message.agent.service.InfoRequirementService;
 import org.feynix.application.conversation.service.message.agent.workflow.AgentWorkflowContext;
 import org.feynix.application.conversation.service.message.agent.workflow.AgentWorkflowState;
-import org.feynix.application.task.dto.TaskDTO;
-import org.feynix.domain.conversation.constant.MessageType;
+
 
 import org.feynix.domain.conversation.model.MessageEntity;
-import org.feynix.domain.conversation.service.ContextDomainService;
-import org.feynix.domain.conversation.service.ConversationDomainService;
-import org.feynix.domain.task.constant.TaskStatus;
+
+import org.feynix.domain.conversation.service.MessageDomainService;
+
 import org.feynix.domain.task.model.TaskEntity;
-import org.feynix.domain.task.service.TaskDomainService;
+
 import org.feynix.infrastructure.llm.LLMServiceFactory;
 import org.feynix.infrastructure.transport.MessageTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+
 
 /**
  * Agent消息处理器
@@ -70,14 +45,14 @@ public class AgentMessageHandler extends AbstractMessageHandler {
     private final InfoRequirementService infoRequirementService;
 
 
+
     public AgentMessageHandler(
-            ConversationDomainService conversationDomainService,
-            ContextDomainService contextDomainService,
+
             LLMServiceFactory llmServiceFactory,
             TaskManager taskManager,
             TaskSplitHandler taskSplitHandler, TaskExecutionHandler taskExecutionHandler, SummarizeHandler summarizeHandler,
-            AnalyserMessageHandler analyserMessageHandler, InfoRequirementService infoRequirementService) {
-        super(conversationDomainService, contextDomainService, llmServiceFactory);
+            AnalyserMessageHandler analyserMessageHandler, InfoRequirementService infoRequirementService, MessageDomainService messageDomainService) {
+        super(messageDomainService, llmServiceFactory);
         this.taskManager = taskManager;
         this.taskSplitHandler = taskSplitHandler;
         this.taskExecutionHandler = taskExecutionHandler;
@@ -87,6 +62,7 @@ public class AgentMessageHandler extends AbstractMessageHandler {
 
         // 初始化事件处理器
         initializeEventHandlers();
+
     }
 
     /**

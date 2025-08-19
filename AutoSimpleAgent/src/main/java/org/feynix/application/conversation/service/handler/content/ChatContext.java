@@ -18,6 +18,7 @@ import org.feynix.domain.llm.model.ModelEntity;
 import org.feynix.domain.llm.model.ProviderEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -142,6 +143,10 @@ public class ChatContext {
     }
 
     public ChatRequest prepareChatRequest() {
+        // 调用有参版本，传入默认值（空列表）
+        return prepareChatRequest(null);
+    }
+    public ChatRequest prepareChatRequest(List<ChatMessage> messages) {
         // 构建聊天消息列表
         List<ChatMessage> chatMessages = new ArrayList<>();
         dev.langchain4j.model.chat.request.ChatRequest.Builder chatRequestBuilder =
@@ -158,15 +163,16 @@ public class ChatContext {
             chatMessages.add(new AiMessage(AgentPromptTemplates.getSummaryPrefix() + this.getContextEntity().getSummary()));
         }
 
+
         // 3. 添加对话历史
         for (MessageEntity messageEntity : this.getMessageHistory()) {
-            Role role = messageEntity.getRole();
             String content = messageEntity.getContent();
-            if (role == Role.USER) {
+            if (messageEntity.isUserMessage()) {
                 chatMessages.add(new UserMessage(content));
-            } else if (role == Role.SYSTEM) {
-                // 历史中的SYSTEM角色实际上是AI的回复
+            } else if (messageEntity.isAssistantMessage()) {
                 chatMessages.add(new AiMessage(content));
+            }else if (messageEntity.isSystemMessage()){
+                chatMessages.add(new SystemMessage(content));
             }
         }
 
@@ -182,6 +188,10 @@ public class ChatContext {
         // 设置消息和参数
         chatRequestBuilder.messages(chatMessages);
         chatRequestBuilder.parameters(parameters.build());
+
+        if(messages!=null){
+            chatRequestBuilder.messages(messages);
+        }
 
         return chatRequestBuilder.build();
     }

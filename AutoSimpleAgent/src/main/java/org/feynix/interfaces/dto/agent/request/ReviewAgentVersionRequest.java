@@ -1,7 +1,7 @@
 package org.feynix.interfaces.dto.agent.request;
 
 import org.feynix.domain.agent.constant.PublishStatus;
-import org.feynix.infrastructure.utils.ValidationUtils;
+
 import org.feynix.infrastructure.exception.ParamValidationException;
 
 /**
@@ -31,7 +31,7 @@ public class ReviewAgentVersionRequest {
      * 校验请求参数
      */
     public void validate() {
-        ValidationUtils.notNull(status, "status");
+
 
         // 如果是拒绝，必须提供拒绝原因
         if (PublishStatus.REJECTED.equals(status) &&

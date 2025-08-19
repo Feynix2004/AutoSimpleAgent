@@ -39,12 +39,5 @@ public class MessageDomainService {
         contextRepository.insertOrUpdate(contextEntity);
     }
 
-    /**
-     * 保存消息
-     */
-    public void saveMessage(List<MessageEntity> messageEntities){
-        messageRepository.insert(messageEntities);
-
-    }
 
 }
